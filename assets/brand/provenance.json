@@ -1,0 +1,59 @@
+{
+  "artwork": {
+    "asset": "visual.avif",
+    "source": "Whale-girl derivative artwork supplied by MELODY-TOYS; exact upstream source work not recorded.",
+    "sourceDimensions": [
+      1024,
+      1536
+    ],
+    "assetDimensions": [
+      640,
+      960
+    ],
+    "processing": "Resized to AVIF with the full composition and lettering preserved.",
+    "sourceWorkUrl": null
+  },
+  "detailBackground": {
+    "asset": "persona-loop.mp4",
+    "source": "Whale-girl derivative video supplied by MELODY-TOYS; exact upstream source work not recorded.",
+    "sourceDimensions": [
+      1440,
+      2176
+    ],
+    "assetDimensions": [
+      160,
+      242
+    ],
+    "durationSeconds": 6.333333,
+    "processing": "Removed the near-static tail, removed audio, downscaled, and re-encoded as H.264 for the dimmed plugin-detail backdrop.",
+    "sourceWorkUrl": null
+  },
+  "license": "CC-BY-NC-SA-4.0",
+  "licenseFile": "LICENSE",
+  "licenseUrl": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "attribution": [
+    {
+      "name": "ZipZipPipe",
+      "role": "Whale-girl derivative design"
+    },
+    {
+      "name": "上善无形",
+      "role": "Original character author credited in ZipZipPipe's video descriptions"
+    },
+    {
+      "name": "MELODY-TOYS",
+      "role": "Supplied media and package processing described above"
+    }
+  ],
+  "licenseEvidence": {
+    "source": "Search-indexed descriptions of videos attributed to ZipZipPipe",
+    "statementUrls": [
+      "https://www.bilibili.com/video/BV1tE9XBbErS/",
+      "https://www.bilibili.com/video/BV1VujS6MEJt/"
+    ],
+    "upstreamSourceCreditedByZipZipPipe": "https://b23.tv/Kn7yvnF",
+    "checkedOn": "2026-09-23",
+    "liveStatementVerified": false,
+    "exactSourceWorkVerified": false
+  }
+}

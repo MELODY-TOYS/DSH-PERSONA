@@ -1,0 +1,6 @@
+# The bare package row owns Persona identities and the shared browser settings.
+- insert:
+    - id: dsh-persona
+      name: dsh-persona
+    - id: dsh-persona-prompts
+      name: dsh-persona/prompts

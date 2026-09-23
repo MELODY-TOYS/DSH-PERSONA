@@ -1,0 +1,114 @@
+/* DSH 0.1.6-alpha.2: PluginConfigForm, ui-primitives/Modal and Tooltip. See docs/UI.md. */
+.dsh-persona-settings {
+  --dsp-text: var(--dsw-alias-label-primary, CanvasText);
+  --dsp-secondary: var(--dsw-alias-label-secondary, #c0c0c5);
+  --dsp-muted: var(--dsw-alias-label-tertiary, #949499);
+  --dsp-border: var(--dsw-alias-border-l4, #414144);
+  --dsp-divider: var(--dsw-alias-border-l3, #353538);
+  --dsp-input: var(--dsw-alias-bg-layer-3, Canvas);
+  --dsp-surface: var(--dsw-alias-bg-layer-1, Canvas);
+  --dsp-error: var(--dsw-alias-state-error-primary, #ff6666);
+  --dsp-hover: var(--dsw-alias-interactive-bg-hover, color-mix(in srgb, var(--dsp-text) 8%, var(--dsp-input)));
+  --dsp-motion-fast: 120ms;
+  --dsp-motion-enter: 150ms;
+  --dsp-motion-disclosure: 160ms;
+  color: var(--dsp-text); font: inherit; font-size: 13px; line-height: 1.5; min-width: 0;
+  container-type: inline-size;
+}
+.dsh-persona-settings *, .dsh-persona-settings *::before, .dsh-persona-settings *::after { box-sizing: border-box; }
+.dsh-persona-settings [hidden] { display: none !important; }
+.dsh-persona-settings h2, .dsh-persona-settings h3, .dsh-persona-settings h4, .dsh-persona-settings p { margin: 0; }
+.dsh-persona-settings h2 { font-size: 15px; font-weight: 600; }
+.dsh-persona-settings h3 { font-size: 13px; font-weight: 600; }
+.dsh-persona-settings h4 { font-size: 12px; font-weight: 500; }
+.dsh-persona-settings button, .dsh-persona-settings input, .dsh-persona-settings select { font: inherit; }
+.dsh-persona-settings button, .dsh-persona-settings select { cursor: pointer; }
+.dsh-persona-settings button { border: 1px solid var(--dsp-border); border-radius: 8px; padding: 6px 12px; min-height: 32px; color: var(--dsp-text); background: var(--dsp-input); white-space: nowrap; }
+.dsh-persona-settings button:hover:not(:disabled) { background: var(--dsp-hover); }
+.dsh-persona-settings button:disabled, .dsh-persona-settings input:disabled, .dsh-persona-settings select:disabled { cursor: default; opacity: .45; }
+.dsh-persona-settings :focus-visible { outline: 2px solid var(--dsp-secondary); outline-offset: 3px; }
+.dsh-persona-settings input:not([type=checkbox]):not([type=range]):not([type=file]), .dsh-persona-settings select { width: 100%; min-width: 0; height: 36px; border: 1px solid var(--dsp-border); border-radius: 8px; padding: 6px 10px; background: var(--dsp-input); color: var(--dsp-text); }
+.dsh-persona-settings input::placeholder { color: var(--dsp-muted); }
+.dsh-persona-settings input[type=checkbox] { accent-color: var(--dsp-text); width: 14px; height: 14px; flex: 0 0 14px; margin: 0; }
+.dsh-persona-settings input[aria-invalid=true] { border-color: var(--dsp-error) !important; }
+.dsh-persona-settings .dsp-hint { font-size: 12px; color: var(--dsp-muted); line-height: 1.6; }
+.dsh-persona-settings .dsp-editable { padding: 0; margin: 0; border: 0; min-width: 0; }
+.dsh-persona-settings .dsp-section-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 12px; margin-bottom: 16px; }
+.dsh-persona-settings .dsp-field { display: grid; gap: 6px; min-width: 0; }
+.dsh-persona-settings .dsp-field > span { font-size: 12px; color: var(--dsp-secondary); }
+.dsh-persona-settings .dsp-field .dsp-field-error { color: var(--dsp-error); font-size: 12px; }
+.dsh-persona-settings .dsp-text-button { background: transparent; border: 0; padding: 5px 6px; font-size: 12px; color: var(--dsp-secondary); }
+.dsh-persona-settings .dsp-text-button:hover:not(:disabled) { background: var(--dsp-hover); }
+.dsh-persona-settings .dsp-validation, .dsh-persona-settings .dsp-read-error, .dsh-persona-settings .dsp-conflict { color: var(--dsp-error); font-size: 12px; }
+.dsh-persona-settings .dsp-conflict { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+/* Auto-save feedback stays in the form flow. DSH still owns the page gutters. */
+.dsh-persona-settings .dsp-save-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 16px 0 max(8px, env(safe-area-inset-bottom, 0px));
+}
+.dsh-persona-settings .dsp-save-footer > .dsp-validation,
+.dsh-persona-settings .dsp-save-footer > .dsp-conflict {
+  min-width: 0;
+  margin: 0;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.dsh-persona-settings .dsp-save-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.dsh-persona-settings .dsp-save-status { min-width: 0; min-height: 1.6em; overflow-wrap: anywhere; }
+.dsh-persona-settings .dsp-save-retry { color: var(--dsw-alias-brand-primary, var(--dsp-secondary)); }
+.dsh-persona-settings .dsp-save-footer .dsp-conflict .dsp-text-button,
+.dsh-persona-settings .dsp-save-retry {
+  padding: 5px 0;
+  white-space: normal;
+  text-align: start;
+}
+.dsh-persona-settings .dsp-save-footer .dsp-conflict .dsp-text-button:hover:not(:disabled),
+.dsh-persona-settings .dsp-save-retry:hover:not(:disabled) {
+  background: transparent;
+  text-decoration: underline;
+}
+@media (pointer: coarse) {
+  .dsh-persona-settings .dsp-save-footer .dsp-conflict .dsp-text-button,
+  .dsh-persona-settings .dsp-save-retry {
+    min-height: 40px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+}
+.dsh-persona-settings .dsp-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+.dsh-persona-settings dialog { max-width: calc(100vw - 32px); max-height: calc(100dvh - 32px); overflow: auto; width: 380px; border: 0; border-radius: 24px; padding: 24px; background: var(--dsw-alias-bg-layer-2, var(--dsp-surface)); color: var(--dsp-text); box-shadow: var(--dsw-elevation-prominent, 0 16px 48px #0003); }
+.dsh-persona-settings dialog::backdrop { background: var(--dsw-alias-bg-mask-1, #0009); backdrop-filter: var(--dsw-mask-blur, none); }
+.dsh-persona-settings dialog h3 { font-size: 16px; line-height: 24px; font-weight: 500; margin-bottom: 8px; }
+.dsh-persona-settings .dsp-dialog-actions { display: flex; justify-content: end; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.dsh-persona-settings .dsp-settings-workspace { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 24px; align-items: start; }
+.dsh-persona-settings .dsp-settings-list { min-width: 0; display: flex; flex-direction: column; gap: 4px; padding-right: 12px; border-right: 1px solid var(--dsp-divider); max-height: 540px; overflow: auto; scrollbar-width: thin; }
+.dsh-persona-settings .dsp-settings-editor { min-width: 0; grid-template-columns: minmax(0, 1fr); }
+.dsh-persona-settings .dsp-settings-editor > * { min-width: 0; }
+.dsh-persona-settings .dsp-disclosure-toggle { display: inline-flex; align-items: center; gap: 8px; }
+.dsh-persona-settings .dsp-disclosure-toggle::after { content: ''; width: 6px; height: 6px; border-right: 1px solid currentColor; border-bottom: 1px solid currentColor; transform: rotate(45deg) translateY(-2px); }
+.dsh-persona-settings .dsp-disclosure-toggle[aria-expanded=true]::after { transform: rotate(225deg) translate(-1px, -1px); }
+@container (max-width: 760px) {
+  .dsh-persona-settings .dsp-settings-workspace { grid-template-columns: 150px minmax(0, 1fr); gap: 18px; }
+}
+@container (max-width: 600px) {
+  .dsh-persona-settings .dsp-settings-workspace { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .dsh-persona-settings .dsp-settings-list { flex-direction: row; max-height: none; border-right: 0; border-bottom: 1px solid var(--dsp-divider); padding: 0 0 12px; }
+  .dsh-persona-settings .dsp-settings-list > button { flex: 0 0 160px; width: 160px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .dsh-persona-settings button { transition: background-color var(--dsp-motion-fast) ease, border-color var(--dsp-motion-fast) ease; }
+  .dsh-persona-settings .dsp-disclosure-toggle::after { transition: transform var(--dsp-motion-disclosure) ease; }
+  .dsh-persona-settings .dsp-disclosure-content:not([hidden]),
+  .dsh-persona-settings dialog[open],
+  .dsh-persona-settings dialog[open]::backdrop { animation: dsp-settings-enter var(--dsp-motion-enter) var(--ds-ease-in-out, ease); }
+}
+@keyframes dsp-settings-enter { from { opacity: 0; } to { opacity: 1; } }

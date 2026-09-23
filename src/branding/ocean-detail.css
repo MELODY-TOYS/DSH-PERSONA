@@ -1,0 +1,98 @@
+[data-dso-host] { isolation: isolate; }
+[data-plugin-package="dsh-persona"] button[aria-label="查看 persona"],
+[data-dso-part=title],
+[data-dso-open] > span:first-child,
+[data-dso-detail=component] > [data-dso-part=crumb] { text-transform: uppercase; }
+.dsp-click-bubbles {
+  position: fixed; z-index: 8; overflow: hidden; pointer-events: none; contain: strict;
+  max-width: none !important; margin: 0 !important; padding: 0 !important;
+}
+.dsp-click-bubbles > canvas { display: block; width: 100%; height: 100%; pointer-events: none; }
+.dso-layer {
+  position: fixed; z-index: -1; overflow: hidden; pointer-events: none;
+  max-width: none !important; margin: 0 !important; padding: 0 !important;
+  background: var(--dsw-alias-bg-layer-1, #1b1b1b);
+}
+.dso-art, .dso-video {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  object-position: 72% 48%; opacity: .6;
+}
+.dso-art[hidden] { display: none; }
+.dso-video { opacity: 0; }
+.dso-video[data-ready] { opacity: .6; }
+.dso-layer::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg,
+    var(--dsw-alias-bg-layer-1, #1b1b1b) 0%,
+    color-mix(in srgb, var(--dsw-alias-bg-layer-1, #1b1b1b) 94%, transparent) 40%,
+    color-mix(in srgb, var(--dsw-alias-bg-layer-1, #1b1b1b) 60%, transparent) 100%);
+}
+.dso-layer[data-page=component]::after {
+  background: linear-gradient(90deg,
+    var(--dsw-alias-bg-layer-1, #1b1b1b),
+    color-mix(in srgb, var(--dsw-alias-bg-layer-1, #1b1b1b) 94%, transparent) 52%,
+    color-mix(in srgb, var(--dsw-alias-bg-layer-1, #1b1b1b) 78%, transparent));
+}
+[data-dso-detail] {
+  position: relative; min-width: 0; width: 100%; max-width: 960px !important;
+  color: var(--dsw-alias-label-primary, CanvasText); letter-spacing: 0; container-type: inline-size;
+}
+[data-dso-detail] > [data-dso-part=crumb] { align-self: flex-start; font-size: 12px; margin-bottom: 8px; }
+[data-dso-part=head], [data-dso-part=identity] { margin-top: 0 !important; }
+[data-dso-part=icon] { width: 40px !important; height: 40px !important; border-radius: 8px !important; }
+[data-dso-part=title] { font-size: 28px !important; line-height: 1.25 !important; font-weight: 600 !important; letter-spacing: 0; overflow-wrap: anywhere; }
+[data-dso-detail=component] [data-dso-part=title] { font-size: 24px !important; }
+[data-dso-part=identity] > p { max-width: 640px; line-height: 1.6; }
+[data-dso-detail] [data-plugin-rows] { margin-top: 8px; }
+[data-dso-detail] [data-plugin-rows] ul { margin-top: 12px; padding: 0; }
+[data-dso-detail] [data-plugin-row] {
+  border: 0 !important; border-bottom: 1px solid var(--dsw-alias-border-l3, #353538) !important;
+  border-radius: 0; background: transparent; padding: 18px 0 !important;
+}
+[data-dso-part=row-line] { gap: 14px !important; }
+[data-dso-part=row-main] { min-width: 0; }
+[data-dso-open] { min-height: 32px; }
+[data-dso-open] > span:first-child { font-size: 15px !important; font-weight: 500; }
+[data-dso-open]:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; border-radius: 4px; }
+[data-dso-detail] .dsp-suite { padding: 0 !important; border: 0 !important; box-shadow: none !important; background: transparent !important; backdrop-filter: none !important; }
+[data-dso-detail] [data-plugin-config] { margin-top: 20px; }
+[data-dso-detail] .dsh-persona-settings {
+  --dsp-input: color-mix(in srgb, var(--dsw-alias-bg-layer-3, Canvas) 94%, transparent);
+  --dsp-surface: var(--dsw-alias-bg-layer-1, Canvas);
+  --dsp-motion-enter: 150ms;
+  --dsp-motion-ease: cubic-bezier(.2,.7,.2,1);
+}
+[data-dso-detail] .dsh-persona-settings h3 { font-size: 14px; }
+[data-dso-detail] .dsp-content, [data-dso-detail] .dsp-prompts-content { display: flex; flex-direction: column; }
+[data-dso-detail] .dsh-persona-settings .dsp-user-fields { grid-template-columns: 184px minmax(0, 340px); }
+[data-dso-detail] .dsh-persona-settings .dsp-user-settings { padding-bottom: 22px; margin-bottom: 24px; }
+[data-dso-detail] .dsh-persona-settings .dsp-settings-workspace { grid-template-columns: 168px minmax(0, 1fr); gap: 24px; }
+[data-dso-detail] .dsh-persona-settings .dsp-settings-list { gap: 6px; }
+[data-dso-detail] .dsh-persona-settings .dsp-persona-item,
+[data-dso-detail] .dsh-persona-settings .dsp-prompts-rule { min-height: 54px; border-radius: 6px; }
+[data-dso-detail] .dsh-persona-settings .dsp-ai-identity { grid-template-columns: 160px minmax(0, 1fr); gap: 16px; }
+[data-dso-detail] .dsh-persona-settings .dsp-chat-preview {
+  padding: 16px; background: color-mix(in srgb, var(--dsp-surface) 88%, transparent);
+  border: 1px solid var(--dsp-divider); border-radius: 6px;
+}
+[data-dso-detail] .dsh-persona-settings .dsp-models,
+[data-dso-detail] .dsh-persona-settings .dsp-prompts-target-list { background: color-mix(in srgb, var(--dsp-surface) 94%, transparent); }
+[data-dso-detail] .dsh-persona-settings .dsp-save-footer { order: -1; border-bottom: 1px solid var(--dsp-divider); padding: 0 0 12px; margin: 0 0 20px; }
+[data-dso-detail] .dsh-persona-settings .dsp-save-row { justify-content: flex-end; }
+[data-dso-detail] .dsh-persona-settings .dsp-model-tools { gap: 6px; }
+@container (max-width: 720px) {
+  [data-dso-detail] .dsh-persona-settings .dsp-settings-workspace { grid-template-columns: 148px minmax(0, 1fr); gap: 18px; }
+  [data-dso-detail] .dsh-persona-settings .dsp-ai-identity { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+}
+@container (max-width: 580px) {
+  [data-dso-detail] .dsh-persona-settings .dsp-settings-workspace { grid-template-columns: minmax(0, 1fr); }
+  [data-dso-detail] .dsh-persona-settings .dsp-settings-list { flex-direction: row; border-right: 0; border-bottom: 1px solid var(--dsp-divider); padding: 0 0 12px; }
+  [data-dso-detail] .dsh-persona-settings .dsp-user-fields { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  [data-dso-detail] [data-plugin-row] { padding: 14px 0 !important; }
+  [data-dso-part=row-line] { gap: 8px !important; flex-wrap: wrap; }
+  [data-dso-part=row-main] { flex: 1 1 140px; }
+  [data-dso-open] > span:first-child { overflow-wrap: anywhere; white-space: normal; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dso-layer *, [data-dso-detail] *, [data-dso-detail] *::before, [data-dso-detail] *::after { animation: none !important; transition: none !important; }
+}

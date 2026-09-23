@@ -1,0 +1,66 @@
+.dsh-persona-settings .dsp-user-settings { padding-bottom: 24px; border-bottom: 1px solid var(--dsp-divider); margin-bottom: 24px; }
+.dsh-persona-settings .dsp-user-fields { display: grid; grid-template-columns: 196px minmax(0,1fr); gap: 20px; align-items: center; margin-top: 16px; }
+.dsh-persona-settings .dsp-avatar-editor { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.dsh-persona-settings .dsp-avatar-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.dsh-persona-settings .dsp-avatar-editor button { font-size: 12px; padding: 4px 10px; }
+.dsh-persona-settings .persona-avatar { --dsp-avatar-size: 32px; display: inline-flex; align-items: center; justify-content: center; position: relative; width: var(--dsp-avatar-size); height: var(--dsp-avatar-size); flex: 0 0 var(--dsp-avatar-size); border: 1px solid var(--dsp-border); border-radius: 50%; overflow: hidden; color: var(--dsp-text); background: var(--dsp-input); font-size: 12px; font-weight: 500; line-height: 1; }
+.dsh-persona-settings .persona-avatar[data-size=large] { --dsp-avatar-size: 48px; font-size: 17px; }
+.dsh-persona-settings .persona-avatar img { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover; }
+.dsh-persona-settings .dsp-persona-count { margin-left: 6px; font-weight: 400; }
+.dsh-persona-settings .dsp-no-personas { padding: 32px 16px; text-align: center; border: 1px solid var(--dsp-divider); border-radius: 6px; }
+.dsh-persona-settings .dsp-no-personas p + p { margin-top: 6px; }
+.dsh-persona-settings .dsp-persona-item { display: flex; align-items: center; gap: 9px; text-align: left; padding: 10px 8px; background: transparent; border: 1px solid transparent; width: 100%; min-width: 0; }
+.dsh-persona-settings .dsp-persona-item.is-selected { background: var(--dsp-input); border-color: var(--dsp-border); }
+.dsh-persona-settings .dsp-persona-item-copy { display: grid; gap: 2px; min-width: 0; }
+.dsh-persona-settings .dsp-persona-item-copy strong { font-size: 12px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dsh-persona-settings .dsp-persona-item-copy small { font-size: 11px; }
+.dsh-persona-settings .dsp-persona-editor { display: grid; gap: 20px; }
+.dsh-persona-settings .dsp-ai-identity { display: grid; grid-template-columns: 196px minmax(0,1fr); gap: 20px; align-items: center; }
+.dsh-persona-settings .dsp-model-section .dsp-section-heading { margin-bottom: 4px; }
+.dsh-persona-settings .dsp-model-tools { display: flex; align-items: center; gap: 8px; margin: 12px 0; }
+.dsh-persona-settings .dsp-search { flex: 1; }
+.dsh-persona-settings .dsp-search input { background: var(--dsp-input); }
+.dsh-persona-settings .dsp-models { margin: 0; min-width: 0; max-height: 288px; overflow: auto; padding: 12px; border: 1px solid var(--dsp-border); border-radius: 6px; scrollbar-width: thin; scrollbar-color: var(--dsp-border) transparent; }
+.dsh-persona-settings .dsp-provider { font-size: 11px; color: var(--dsp-muted); padding: 0 4px; margin-bottom: 4px; }
+.dsh-persona-settings .dsp-model-group + .dsp-model-group { padding-top: 10px; margin-top: 8px; border-top: 1px solid var(--dsp-divider); }
+.dsh-persona-settings .dsp-model-row { display: flex; align-items: center; gap: 8px; min-width: 0; border-radius: 4px; }
+.dsh-persona-settings .dsp-model-row:hover { background: var(--dsp-hover); }
+.dsh-persona-settings .dsp-model-label { display: flex; align-items: center; flex: 1; min-width: 0; gap: 10px; padding: 8px 4px; cursor: pointer; }
+.dsh-persona-settings .dsp-model-copy { min-width: 0; }
+.dsh-persona-settings .dsp-model-name, .dsh-persona-settings .dsp-route { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dsh-persona-settings .dsp-model-name { font-size: 13px; }
+.dsh-persona-settings .dsp-route { margin-top: 2px; font-size: 11px; color: var(--dsp-muted); }
+.dsh-persona-settings .dsp-model-owner { color: var(--dsp-muted); font-size: 11px; max-width: 112px; padding-right: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dsh-persona-settings .dsp-catalog-status { margin-top: 8px; }
+.dsh-persona-settings .dsp-empty { padding: 12px 4px; }
+.dsh-persona-settings .dsp-persona-footer { display: flex; justify-content: flex-end; margin-top: 8px; }
+.dsh-persona-settings .dsp-persona-footer button { color: var(--dsp-muted); }
+.dsh-persona-settings .dsp-chat-preview { border: 1px solid var(--dsp-divider); border-radius: 6px; padding: 18px; }
+.dsh-persona-settings .dsp-preview-messages { display: grid; gap: 20px; }
+.dsh-persona-settings .dsp-preview-message { display: flex; align-items: start; gap: 10px; }
+.dsh-persona-settings .dsp-preview-user { flex-direction: row-reverse; }
+.dsh-persona-settings .dsp-preview-user .dsp-preview-copy { text-align: right; }
+.dsh-persona-settings .dsp-preview-copy { min-width: 0; }
+.dsh-persona-settings .dsp-preview-copy strong { font-size: 12px; font-weight: 500; display: block; margin-bottom: 4px; overflow-wrap: anywhere; }
+.dsh-persona-settings .dsp-preview-bubble { font-size: 12px; line-height: 1.7; padding: 6px 10px; border-radius: 7px; background: var(--dsp-input); }
+.dsh-persona-settings .dsp-preview-assistant .dsp-preview-bubble { padding-left: 0; background: transparent; }
+.dsh-persona-settings .dsp-preview-section { min-width: 0; }
+.dsh-persona-settings .dsp-preview-section > h4 { font-size: 12px; color: var(--dsp-secondary); margin-bottom: 12px; }
+.dsh-persona-settings .dsp-preview-copy { max-width: calc(100% - 50px); }
+.dsh-persona-settings .dsp-preview-bubble { overflow-wrap: anywhere; }
+.dsh-persona-settings .dsp-empty-preview:not(:empty) { margin-top: 20px; }
+.dsh-persona-settings dialog canvas { width: 100%; display: block; max-width: 256px; margin: 18px auto; border-radius: 50%; }
+.dsh-persona-settings .dsp-crop-slider { display: grid; grid-template-columns: 60px minmax(0,1fr); align-items: center; gap: 6px; font-size: 12px; margin: 12px 0; }
+.dsh-persona-settings .dsp-crop-slider input { width: 100%; }
+@container (max-width: 760px) {
+  .dsh-persona-settings .dsp-ai-identity { grid-template-columns: 1fr; gap: 16px; }
+  .dsh-persona-settings .dsp-model-tools { flex-wrap: wrap; gap: 4px 12px; }
+  .dsh-persona-settings .dsp-search { flex-basis: 100%; margin-bottom: 4px; }
+}
+@container (max-width: 600px) {
+  .dsh-persona-settings .dsp-persona-item-copy { min-width: 0; }
+  .dsh-persona-settings .dsp-model-owner { max-width: 72px; }
+}
+@container (max-width: 520px) {
+  .dsh-persona-settings .dsp-user-fields { grid-template-columns: 1fr; gap: 16px; }
+}

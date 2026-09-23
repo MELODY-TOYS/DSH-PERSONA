@@ -1,0 +1,41 @@
+.dsp-prompts-settings .dsp-prompts-readonly { margin-bottom: 16px; }
+.dsp-prompts-settings .dsp-prompts-empty { padding: 32px 16px; text-align: center; border: .5px solid var(--dsp-divider); border-radius: 8px; }
+.dsp-prompts-settings .dsp-prompts-rule { display: grid; grid-template-columns: 18px minmax(0,1fr); gap: 2px 6px; padding: 10px 8px; text-align: start; white-space: normal; background: transparent; border-color: transparent; }
+.dsp-prompts-settings .dsp-prompts-rule[aria-current=true] { background: var(--dsp-input); border-color: var(--dsp-border); }
+.dsp-prompts-settings .dsp-prompts-rule strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 500; }
+.dsp-prompts-settings .dsp-prompts-rule small { grid-column: 2; font-size: 11px; }
+.dsp-prompts-settings .dsp-prompts-index { color: var(--dsp-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.dsp-prompts-settings .dsp-prompts-editor { min-width: 0; display: grid; gap: 20px; }
+.dsp-prompts-settings .dsp-prompts-targets .dsp-section-heading { margin-bottom: 10px; }
+.dsp-prompts-settings .dsp-prompts-target-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 10px; }
+.dsp-prompts-settings .dsp-prompts-target-tools input { flex: 1 1 160px; width: auto !important; }
+.dsp-prompts-settings .dsp-prompts-kinds { display: flex; gap: 2px; padding: 3px; border-radius: 8px; background: var(--dsp-input); }
+.dsp-prompts-settings .dsp-prompts-kinds button { border: 0; min-height: 28px; font-size: 12px; padding: 4px 10px; color: var(--dsp-muted); background: transparent; }
+.dsp-prompts-settings .dsp-prompts-kinds button[aria-pressed=true] { color: var(--dsp-text); background: var(--dsp-surface); }
+.dsp-prompts-settings .dsp-prompts-target-list { display: grid; gap: 2px; min-width: 0; max-height: 210px; overflow: auto; padding: 10px; border: .5px solid var(--dsp-border); border-radius: 8px; }
+.dsp-prompts-settings .dsp-prompts-target-list > p { padding: 12px 4px; }
+.dsp-prompts-settings .dsp-prompts-target { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 8px 6px; border-radius: 6px; cursor: pointer; }
+.dsp-prompts-settings .dsp-prompts-target:hover { background: var(--dsp-input); }
+.dsp-prompts-settings .dsp-prompts-target > span { flex: 1; min-width: 0; }
+.dsp-prompts-settings .dsp-prompts-target > span > * { display: block; overflow-wrap: anywhere; }
+.dsp-prompts-settings .dsp-prompts-source-status, .dsp-prompts-settings .dsp-prompts-target-warning { margin-top: 8px; }
+.dsp-prompts-settings textarea { box-sizing: border-box; width: 100%; min-height: 280px; resize: vertical; padding: 12px 14px; border: 1px solid var(--dsp-border); border-radius: 8px; background: var(--dsp-input); color: var(--dsp-text); font: inherit; line-height: 1.75; }
+.dsp-prompts-settings textarea[aria-invalid=true] { border-color: var(--dsp-error); }
+.dsp-prompts-settings .dsp-prompts-caption { display: flex; align-items: flex-start; gap: 16px; margin-top: -12px; }
+.dsp-prompts-settings .dsp-prompts-caption > p { flex: 1; }
+.dsp-prompts-settings .dsp-prompts-length { flex: 0 0 auto; font-variant-numeric: tabular-nums; }
+.dsp-prompts-settings .dsp-prompts-actions { display: flex; justify-content: flex-end; border-top: .5px solid var(--dsp-divider); padding-top: 10px; }
+@container (max-width: 600px) {
+  .dsp-prompts-settings .dsp-prompts-caption { flex-wrap: wrap; gap: 4px; }
+  .dsp-prompts-settings .dsp-prompts-caption > p { flex-basis: 100%; }
+}
+.dsp-prompts-settings .dsp-prompts-order { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; margin: -4px 0 16px; }
+.dsp-prompts-settings .dsp-prompts-summary { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; max-height: 144px; overflow: auto; padding: 2px; margin-bottom: 10px; }
+.dsp-prompts-settings .dsp-target-tag { max-width: 100%; padding: 3px 8px; border: .5px solid var(--dsp-border); border-radius: 8px; background: var(--dsp-input); font-size: 12px; overflow-wrap: anywhere; }
+.dsp-prompts-settings .dsp-target-tag[data-unavailable] { color: var(--dsp-error); }
+.dsp-prompts-settings .dsp-prompts-target-tools { margin-top: 12px; }
+.dsp-prompts-settings .dsp-prompts-target-warning { overflow-wrap: anywhere; }
+@container (max-width: 360px) {
+  .dsp-prompts-settings .dsp-prompts-kinds { flex-wrap: wrap; }
+}
+.dsp-prompts-settings .dsp-prompts-navigation { min-width: 0; }

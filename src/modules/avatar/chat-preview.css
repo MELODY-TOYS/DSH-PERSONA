@@ -1,0 +1,60 @@
+.dsh-persona-settings .dsp-chat-preview { padding: 0; overflow: hidden; background: var(--dsp-surface); container-type: inline-size; }
+.dsh-persona-settings .dsp-preview-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; padding: 9px 12px; border-bottom: 1px solid var(--dsp-divider); }
+.dsh-persona-settings .dsp-preview-state { display: inline-flex; align-items: center; gap: 7px; color: var(--dsp-secondary); font-size: 11px; min-width: 80px; }
+.dsh-persona-settings .dsp-preview-state i { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.dsh-persona-settings .dsp-preview-local { font-size: 10px; color: var(--dsp-muted); }
+.dsh-persona-settings .dsp-preview-actions { margin-left: auto; display: flex; gap: 2px; }
+.dsh-persona-settings .dsp-preview-actions button { min-height: 28px; padding: 3px 7px; font-size: 11px; }
+.dsh-persona-settings .dsp-preview-stage { position: relative; isolation: isolate; overflow: hidden; }
+.dsh-persona-settings .dsp-preview-transcript { height: 264px; overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--dsp-border) transparent; }
+.dsh-persona-settings .dsp-preview-messages { min-height: 100%; gap: 22px; padding: 20px 16px; align-content: start; }
+.dsh-persona-settings .dsp-preview-copy { flex: 0 1 auto; min-width: 0; }
+.dsh-persona-settings .dsp-preview-user .dsp-preview-copy { max-width: min(70.2%, calc(100% - 50px)); }
+.dsh-persona-settings .dsp-preview-user .dsp-preview-bubble { text-align: left; background: var(--dsw-specific-bubble, var(--dsp-input)); border: 0; border-radius: 22px; padding: 10px 16px; }
+.dsh-persona-settings .dsp-preview-bubble { font-size: var(--dsh-content-font-size, 14px); line-height: calc(22px + var(--dsh-content-font-delta, 0px)); white-space: pre-wrap; overflow-wrap: anywhere; }
+.dsh-persona-settings .dsp-preview-assistant { align-items: flex-start; }
+.dsh-persona-settings .dsp-preview-assistant .dsp-preview-copy { flex: 1; }
+.dsh-persona-settings .dsp-preview-assistant .dsp-preview-bubble { padding: 8px 0 0; min-height: 28px; }
+.dsh-persona-settings .dsp-preview-composer { display: flex; align-items: flex-end; gap: 12px; margin: 0 12px 12px; padding: 12px; border: 1px solid var(--dsp-border); border-radius: 8px; background: var(--dsp-input); }
+.dsh-persona-settings .dsp-preview-composer-text { flex: 1; min-width: 0; min-height: 28px; max-height: 76px; overflow: auto; font-size: 13px; line-height: 1.7; overflow-wrap: anywhere; white-space: pre-wrap; }
+.dsh-persona-settings .dsp-chat-preview:not([data-phase=typing]) .dsp-preview-composer-text { color: var(--dsp-muted); }
+.dsh-persona-settings .dsp-preview-caret { display: inline-block; width: 1.5px; height: 1em; margin-left: 2px; vertical-align: -.12em; background: var(--dsp-text); animation: dsp-preview-blink 1s step-end infinite; }
+.dsh-persona-settings .dsp-chat-preview:not([data-phase=typing]) .dsp-preview-caret { display: none; }
+.dsh-persona-settings .dsp-preview-send { display: grid; place-items: center; flex: 0 0 28px; height: 28px; border-radius: 50%; color: var(--dsp-surface); background: var(--dsp-text); font-size: 20px; line-height: 1; }
+.dsh-persona-settings .dsp-chat-preview:not([data-phase=typing]):not([data-phase=sending]) .dsp-preview-send { opacity: .3; }
+.dsh-persona-settings .dsp-preview-waiting { display: inline-flex; color: var(--dsw-static-deepseek-500, var(--dsp-secondary)); font-size: var(--dsh-content-font-size, 14px); line-height: calc(26px + var(--dsh-content-font-delta, 0px)); }
+.dsh-persona-settings .dsp-preview-thinking { min-width: 0; color: var(--dsw-alias-label-secondary, var(--dsp-secondary)); font-size: var(--dsh-content-font-size, 14px); }
+.dsh-persona-settings .dsp-preview-thinking summary { display: flex; align-items: center; gap: 8px; width: 100%; list-style: none; cursor: pointer; min-height: calc(24px + var(--dsh-content-font-delta, 0px)); position: relative; overflow: hidden; }
+.dsh-persona-settings .dsp-preview-thinking summary::-webkit-details-marker { display: none; }
+.dsh-persona-settings .dsp-preview-thinking summary::before { content: ''; flex: 0 0 5px; height: 5px; margin: 0 3px; border-right: 1px solid currentColor; border-bottom: 1px solid currentColor; transform: rotate(-45deg); }
+.dsh-persona-settings .dsp-preview-thinking[open] summary::before { transform: rotate(45deg); }
+.dsh-persona-settings .dsp-preview-thinking-label { flex-shrink: 0; }
+.dsh-persona-settings .dsp-preview-thinking-separator { width: 2px; height: 2px; border-radius: 1px; background: currentColor; flex-shrink: 0; }
+.dsh-persona-settings .dsp-preview-thinking-summary { flex: 1; min-width: 0; overflow: hidden; color: var(--dsw-alias-label-tertiary, var(--dsp-muted)); font-size: var(--dsh-content-font-size-secondary, 13px); }
+.dsh-persona-settings .dsp-preview-thinking-summary span { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dsh-persona-settings .dsp-chat-preview[data-phase=thinking] .dsp-preview-thinking-summary { display: flex; justify-content: flex-end; }
+.dsh-persona-settings .dsp-chat-preview[data-phase=thinking] .dsp-preview-thinking-summary span { flex: none; width: max-content; min-width: 100%; overflow: visible; text-overflow: clip; }
+.dsh-persona-settings .dsp-chat-preview .dsp-preview-thinking[open] .dsp-preview-thinking-summary,
+.dsh-persona-settings .dsp-chat-preview .dsp-preview-thinking[open] .dsp-preview-thinking-separator { display: none; }
+.dsh-persona-settings .dsp-preview-thought { padding: 4px 0 4px calc(22px + var(--dsh-content-font-delta, 0px)); margin: 0; white-space: pre-wrap; font-size: var(--dsh-content-font-size-secondary, 13px); line-height: calc(22px + var(--dsh-content-font-delta, 0px)); overflow-wrap: anywhere; }
+.dsh-persona-settings .dsp-preview-transport { display: flex; align-items: center; gap: 10px; padding: 0 12px 12px; }
+.dsh-persona-settings .dsp-preview-time { color: var(--dsp-muted); font: inherit; font-size: 10px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.dsh-persona-settings .dsp-preview-seek { flex: 1; min-width: 24px; width: 100%; accent-color: var(--dsp-secondary); height: 16px; }
+.dsh-persona-settings .dsp-preview-speed select { width: 64px; height: 28px; padding: 1px 4px; border-color: transparent; background: transparent; font-size: 11px; }
+.dsh-persona-settings .dsp-chat-preview[data-playing=false] *,
+.dsh-persona-settings .dsp-chat-preview[data-playing=false] *::after { animation-play-state: paused !important; }
+@media (prefers-reduced-motion: no-preference) {
+  .dsh-persona-settings .dsp-preview-waiting { background: linear-gradient(90deg, var(--dsw-static-deepseek-500, var(--dsp-secondary)) 40%, var(--dsw-static-deepseek-200, var(--dsp-muted)) 50%, var(--dsw-static-deepseek-500, var(--dsp-secondary)) 60%); background-size: 250% 100%; background-clip: text; color: transparent; animation: dsp-preview-sheen 1.8s linear infinite; }
+  .dsh-persona-settings .dsp-chat-preview[data-phase=thinking] .dsp-preview-thinking summary::after { content: ''; position: absolute; inset-block: 0; left: 0; width: 300px; pointer-events: none; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--dsw-alias-bg-base, var(--dsp-surface)) 60%, transparent) 55%, transparent); animation: dsp-preview-sweep 2.6s ease-out infinite; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dsh-persona-settings .dsp-preview-caret { animation: none; }
+}
+@container (max-width: 380px) {
+  .dsh-persona-settings .dsp-preview-local { display: none; }
+  .dsh-persona-settings .dsp-preview-messages { padding: 16px 10px; }
+  .dsh-persona-settings .dsp-preview-transport { gap: 6px; }
+}
+@keyframes dsp-preview-blink { 0%, 48% { opacity: 1; } 49%, 100% { opacity: .15; } }
+@keyframes dsp-preview-sheen { from { background-position: 100% 0; } to { background-position: 0 0; } }
+@keyframes dsp-preview-sweep { from { left: -300px; } 90%, to { left: 100%; } }
