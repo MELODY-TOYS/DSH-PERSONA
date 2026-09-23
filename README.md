@@ -10,6 +10,8 @@
 
 当前为 Alpha 版本，适配 DSH `0.1.6-alpha.2`。已记录的联调范围和待验证场景见[宿主接入](docs/INTEGRATION.md#验证状态)。
 
+https://github.com/user-attachments/assets/49004ddd-834e-4cf0-ad6d-6a07e77ddfc9
+
 ## 安装
 
 需要 Node.js `22.19.0` 或更高版本，以及 DSH `0.1.6-alpha.2`。
