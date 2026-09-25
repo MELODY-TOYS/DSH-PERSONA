@@ -44,13 +44,17 @@ DSH `0.1.6` 把设置保存在 DSH home 的 `settings.yaml`。`0.1.7` 首次启�
 
 用户消息、steering、待发送本地回显和待接收 steering 使用用户显示信息。assistant 消息按精确 `(provider, model)` 查找 Persona：优先读取消息携带的 `finalNode.requestConfig`；缺少时使用 `dsh-persona-models` Conversation target，按消息锚点查找其前面的 `request/header` 路由。没有路由证据或没有关联 Persona 的 assistant 行保持宿主原样。
 
-DSH `0.1.7` 把带思考内容的 assistant 步骤拆成两部分：思考部分位于过程分组内的嵌套 `[data-chat-flow]`，`data-chat-group-part="reasoning"`；回复部分位于顶层，`data-chat-group-part="response"`。头像和名称只加在回复部分，过程分组保持原样。模型仍在思考、回复尚未出现时，这一轮暂不显示 AI 头像。消息节点 key 从 `data-chat-node-key` 读取；分组部分的 `data-chat-flow-key` 不是节点 key。
+头像按"一轮回答"显示。DSH `0.1.7` 把一轮回答拆成几行：`turn-process` 状态行（显示"深度求索中"和耗时）、过程分组（思考与工具调用，完成后折叠）、回复部分和 `turn-tail`。同一 `data-chat-turn` 内连续的 assistant 侧行组成一轮；用户消息、steering 和 `turn-trigger` 分隔各轮。每轮只在第一个可见行绘制头像和名称，其余行只增加相同的左侧缩进。状态行尚未渲染、为空或被隐藏时，头像落在下一可见行，状态行出现后移回。过程分组内嵌套 `[data-chat-flow]` 中的思考部分保持原样。
 
-消息列表顺序与单条消息内容分别发布。装饰器通过 `nodes.source(key)` 订阅页面中的每条 assistant 回复，包括暂时无法确定模型的消息；路由补齐或改变后刷新身份，纯文本流式更新不触发页面重扫。消息行移除、换键或数据源替换时清理旧订阅，隐藏的过程行保留订阅，展开后使用最新身份。内容为空的消息行不绘制头像。
+未识别的消息行类型只要带有 `data-chat-turn`，就按 assistant 侧处理。DSH 增加新的包裹行时，头像仍留在这一轮的第一行，不会因为类型名未登记而消失。
+
+一轮的模型取自其中第一个能确定路由的 assistant 步骤，步骤的节点 key 从 `data-chat-node-key` 读取（分组部分的 `data-chat-flow-key` 不是节点 key）。进行中的一轮还没有步骤时，使用状态行锚点之后的第一条 `request/header`。DSH 只在请求配置变化时记录新的 `request/header`，因此模型不变的后续轮次要等第一个思考或回复片段出现后才显示头像，这与 DSH `0.1.6` 的时机一致。不使用输入框当前选择的模型推断。已结束且没有步骤的一轮不显示 AI 头像。
+
+消息列表顺序与单条消息内容分别发布。装饰器通过 `nodes.source(key)` 订阅页面中每轮的 assistant 步骤，包括暂时无法确定模型的步骤；路由补齐或改变后刷新身份，纯文本流式更新不触发页面重扫。消息行增删、换键、显示状态变化或空行被填充时重新计算，数据源替换时清理旧订阅。内容为空的消息行不绘制头像，也不增加缩进。
 
 装饰器只增加头像与名称所需的 `data-dsp-*` 属性、局部 CSS 和可访问名称，不移动消息子节点。Markdown、附件、思考折叠、工具卡片、消息操作、流式内容和中断状态继续由 DSH 原生 renderer 管理。卸载插件或离开 Session 时会恢复这些行并清理观察器、消息订阅、样式和图片预加载器。
 
-这套实现依赖 `0.1.7-rc.2` 的语义属性：`data-conversation-scroll`、`data-chat-flow`、`data-chat-flow-kind`、`data-chat-flow-key`、`data-chat-node-key`、`data-chat-group-part`、`data-submission-echo` 和 `data-pending-steering`。升级 DSH 时必须复查这些属性。
+这套实现依赖 `0.1.7-rc.2` 的语义属性：`data-conversation-scroll`、顶层 `data-chat-flow`、`data-chat-turn`、`data-chat-flow-kind` 中的 `user`、`steering`、`turn-trigger` 和 `assistant-step`、`data-chat-node-key`、`data-chat-group-key`、`data-submission-echo` 和 `data-pending-steering`，以及 `hidden` 与 `data-turn-process-hidden` 两个显示标记。升级 DSH 后运行[真实宿主聊天检查](DEVELOPMENT.md#真实宿主聊天检查)；它在属性或分组方式变化导致头像缺失时失败，并输出每个阶段的行结构。
 
 ## 构建
 
@@ -62,13 +66,13 @@ DSH `0.1.7` 把带思考内容的 assistant 步骤拆成两部分：思考部分
 
 ## 验证状态
 
-`0.1.7-rc.2` 已在本机安装的 DSH Web profile 中做过一次联调：通过 `dsh plugin add` 安装打包文件，两个组件配置页正常显示；修改用户名称后自动保存成功，刷新页面后保留，值写入 profile 的 `cordis.patch.yml`，浏览器控制台没有错误。其余场景仍只经过本地检查。Node 测试在真实 Cordis 容器中运行两个 Host 组件，覆盖 volatile 配置、写入校验、生成表单开关和旧版设置迁移。另一个本地检查使用 npm 发布的 `@deepseek-ai/dsh-settings@0.1.7-rc.2`，配合模拟 Loader 提交步骤的配置编辑器替身，确认了表单投影、修订号冲突、无效文档拒绝和 `settings.yaml` 迁移。浏览器场景使用按 `0.1.7-rc.2` 源码构造的消息行和详情页结构。
+`0.1.7-rc.2` 已在本机安装的 DSH Web profile 中联调：通过 `dsh plugin add` 安装打包文件，两个组件配置页正常显示；修改用户名称后自动保存成功，刷新页面后保留，值写入 profile 的 `cordis.patch.yml`，浏览器控制台没有错误。聊天头像使用[模拟 DeepSeek 接口](../scripts/mock-deepseek.mjs)返回流式思考与回复，检查了新会话首轮、同一会话的后续轮次和刷新后的历史记录：头像在状态行出现后（首轮）或第一个思考片段出现后（模型不变的后续轮次）显示，思考、折叠和回复过程中保持在状态行，每轮只有一个 AI 头像。未验证工具调用、steering、真实 DeepSeek 接口和图片头像。Node 测试在真实 Cordis 容器中运行两个 Host 组件，覆盖 volatile 配置、写入校验、生成表单开关和旧版设置迁移。另一个本地检查使用 npm 发布的 `@deepseek-ai/dsh-settings@0.1.7-rc.2`，配合模拟 Loader 提交步骤的配置编辑器替身，确认了表单投影、修订号冲突、无效文档拒绝和 `settings.yaml` 迁移。浏览器场景使用按 `0.1.7-rc.2` 真实页面结构构造的消息行和详情页结构。
 
 以下联调记录来自 DSH `0.1.6-alpha.2`：桌面与 390px 窄屏、详情页往返、模型搜索、删除弹窗的取消焦点与 Escape、浅深主题、减少动态效果、包详情与组件页之间背景视频实例不变、Persona 与提示词持久化保存，以及最小真实请求中的字面提示词注入。配置页消息预览另检查了发送途中暂停、进度拖动、分块回复、思考区收起和减少动态效果。布局和播放机制见[界面文档](UI.md)。
 
-本地 Node 测试与独立浏览器场景使用设置或宿主接口替身。[聊天头像检查](../scripts/chat-smoke.py) 在真实 Chromium 中验证消息数据更新与装饰器，但页面结构和消息来源仍是测试替身。这些检查不能证明真实安装、网络重连、模型流式回复和跨会话显示。
+本地 Node 测试与独立浏览器场景使用设置或宿主接口替身。[聊天头像检查](../scripts/chat-smoke.py) 在真实 Chromium 中验证消息数据更新与装饰器，但页面结构和消息来源仍是测试替身；[真实宿主聊天检查](../scripts/dsh-live-chat.py) 需要本机运行的 DSH，不在 CI 中运行。这些检查不能证明网络重连和跨会话显示。
 
-TODO：在 DSH `0.1.7-rc.2` 中验证打包文件的全新安装、从 `0.1.6` 升级后的设置迁移、配置写入 profile 后的刷新保留、插件启停、断线重连后的草稿恢复、实际模型流式回复中的过程分组与回复头像，以及多会话切换。重连后的修订冲突应保留输入并阻止覆盖。DSH `0.1.7` 正式版发布后复核本文依赖的接口。
+TODO：在 DSH `0.1.7-rc.2` 中验证打包文件的全新安装、从 `0.1.6` 升级后的设置迁移、配置写入 profile 后的刷新保留、插件启停、断线重连后的草稿恢复、工具调用与 steering 轮次中的头像，以及多会话切换。重连后的修订冲突应保留输入并阻止覆盖。DSH `0.1.7` 正式版发布后复核本文依赖的接口。
 
 ## 上游参考
 

@@ -23,7 +23,7 @@ npm install
 npm pack
 ```
 
-`npm pack` 自动构建插件，生成 `dsh-persona-0.1.0-alpha.5.tgz`。在 DSH 侧边栏打开「插件」，点击「添加插件」，输入该文件的绝对路径并安装。路径必须指向运行 DSH 的电脑上的文件。安装完成后点击「立即启用」。
+`npm pack` 自动构建插件，生成 `dsh-persona-0.1.0-alpha.6.tgz`。在 DSH 侧边栏打开「插件」，点击「添加插件」，输入该文件的绝对路径并安装。路径必须指向运行 DSH 的电脑上的文件。安装完成后点击「立即启用」。
 
 进入「已安装 → dsh-persona → 包含的组件」，点击 `dsh-persona` 设置名称、头像和模型分组，或点击 `dsh-persona/prompts`（组件 ID `dsh-persona-prompts`）编辑提示词。
 

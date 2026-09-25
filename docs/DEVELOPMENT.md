@@ -42,7 +42,18 @@ python scripts/branding-smoke.py
 python scripts/chat-smoke.py
 ```
 
-[聊天头像检查](../scripts/chat-smoke.py) 直接加载源码与样式，不需要先构建。它在 Chromium 中使用按 DSH 接口构造的消息行和按消息订阅的数据源，检查模型信息补齐、过程分组中的思考与回复、折叠展开、消息复用、流式更新和卸载清理；CI 的 `chat-browser` 作业运行同一场景。
+[聊天头像检查](../scripts/chat-smoke.py) 直接加载源码与样式，不需要先构建。它在 Chromium 中使用按 DSH `0.1.7-rc.2` 页面结构构造的消息行和按消息订阅的数据源，检查每轮一个头像、空行与隐藏行的头像转移、模型信息补齐、折叠展开、消息复用、流式更新和卸载清理；CI 的 `chat-browser` 作业运行同一场景。
+
+### 真实宿主聊天检查
+
+DSH 调整聊天页面结构后，替身页面无法发现问题。升级 DSH 或修改[装饰器](../src/modules/avatar/chat/decorate.mjs)后，在真实 DSH 中运行一轮：
+
+1. 启动 `node scripts/mock-deepseek.mjs`。它在 `127.0.0.1:5399` 模拟 DeepSeek 接口，每次回复先流式输出约 6 秒思考，再输出 3 秒正文。
+2. 用 `npm pack` 打包并通过 `dsh plugin add` 安装，在 `dsh-persona` 配置页把 DeepSeek 渠道的 `deepseek-flash`（界面名称 DeepSeek-V41-Flash）关联到任一 Persona。
+3. 以 `DEEPSEEK_BASE_URL=http://127.0.0.1:5399 DEEPSEEK_API_KEY=sk-mock dsh web --no-open` 启动 DSH。
+4. 把 DSH 输出的地址（含 token）设为 `DSH_URL`，运行 `python scripts/dsh-live-chat.py`。
+
+[脚本](../scripts/dsh-live-chat.py) 新建会话并发送一条消息。没有工作区时，它添加 DSH 文件选择器的默认目录。从这一轮第一个思考或回复内容出现起，直到回复结束，这一轮必须恰好有一个 AI 头像。失败时脚本输出各阶段的行结构，可据此确定 DSH 改动了哪一部分。脚本使用 DSH 的英文界面按钮名称。
 
 提示词组件的浏览器检查见[提示词组件](PROMPTS.md#验证)，布局场景见[配置页布局与动效](UI.md)。这些场景使用独立页面和存储替身，不验证真实宿主安装、持久化或实际聊天页面。联调状态见[宿主接入](INTEGRATION.md#验证状态)。
 

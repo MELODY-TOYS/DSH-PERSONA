@@ -1,6 +1,6 @@
 {
   "name": "dsh-persona",
-  "version": "0.1.0-alpha.5",
+  "version": "0.1.0-alpha.6",
   "private": true,
   "description": "为用户和模型设置名称、头像与按模型应用的提示词。",
   "type": "module",
