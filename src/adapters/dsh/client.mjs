@@ -1,4 +1,4 @@
-import { createElement, useLayoutEffect, useRef, useSyncExternalStore } from 'react';
+import { createElement, useCallback, useLayoutEffect, useRef, useSyncExternalStore } from 'react';
 import { PERSONA_LOCALE_NAMESPACE, en, zh, zhTranslate } from '../../locales.mjs';
 import { mountPersonaSettings } from '../../components/settings-page.mjs';
 import { registerPersonaSettings } from './register-settings.mjs';
@@ -9,9 +9,15 @@ import { mountPromptSettings } from '../../modules/prompts/settings-view.mjs';
 import { registerPromptSettings } from './register-prompts.mjs';
 export const inject = ['slots', 'locale', 'configForms', 'remote', 'remote.session', 'sessions', 'uiConversation'];
 
+/** DSH 0.1.7's locale service reads its listeners through `this`; never pass its methods unbound. */
+function useLocaleRevision(localeService) {
+  const subscribe = useCallback(listener => localeService.subscribe(listener), [localeService]);
+  return useSyncExternalStore(subscribe, () => localeService.getSnapshot().revision);
+}
+
 function AvatarConfigPage({ useAvatarSettings, avatarActions, localeService, t }) {
   const state = useAvatarSettings(snapshot => snapshot);
-  const localeRevision = useSyncExternalStore(localeService.subscribe, () => localeService.getSnapshot().revision);
+  const localeRevision = useLocaleRevision(localeService);
   const root = useRef(null), view = useRef(null);
   useLayoutEffect(() => {
     view.current = mountPersonaSettings(root.current, { avatar: avatarActions }, { t });
@@ -28,7 +34,7 @@ export function PersonaPluginConfig(props) {
 
 function PromptConfigPage({ usePromptsSettings, promptsActions, localeService, t }) {
   const state = usePromptsSettings(snapshot => snapshot);
-  const localeRevision = useSyncExternalStore(localeService.subscribe, () => localeService.getSnapshot().revision);
+  const localeRevision = useLocaleRevision(localeService);
   const root = useRef(null), view = useRef(null);
   useLayoutEffect(() => {
     view.current = mountPromptSettings(root.current, promptsActions, { t });

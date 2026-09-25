@@ -42,6 +42,8 @@ test('native client registers chat avatar integration without replacing chat nod
   assert.match(client, /registerChatAvatars/);
   assert.match(chat, /conversation\.composer\.dock/);
   assert.doesNotMatch(chat, /conversation\.chat\.node/);
+  // DSH 0.1.7's locale service reads its listeners through `this`.
+  assert.doesNotMatch(client, /useSyncExternalStore\(\s*localeService\.subscribe/);
 });
 
 test('preview exposes playback speed next to the transport controls and no pace parameters', () => {
