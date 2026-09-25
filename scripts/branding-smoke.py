@@ -1,11 +1,11 @@
-"""Pinned alpha.2 icon-seat smoke test. This does not run a DSH host."""
+"""Pinned 0.1.7-rc.2 icon-seat smoke test. This does not run a DSH host."""
 from pathlib import Path
 import json
 import shutil
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-report = {'environment': 'Chromium about:blank; standalone preview and alpha.2 icon-seat DOM fixtures; no DSH host', 'checks': []}
+report = {'environment': 'Chromium about:blank; standalone preview and 0.1.7-rc.2 icon-seat DOM fixtures; no DSH host', 'checks': []}
 
 def check(name):
     report['checks'].append({'name': name, 'passed': True})
