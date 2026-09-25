@@ -30,7 +30,9 @@ README 和插件图标共用 [visual.avif](../assets/brand/visual.avif)。插件
 
 ## 图标适配范围
 
-DSH `0.1.6-alpha.2` 在插件卡片和详情页绘制固定图标，没有公开的包图标字段。本插件通过局部样式覆盖 `data-plugin-package="dsh-persona"` 和 `data-plugin-detail="dsh-persona"` 下的图标容器。
+DSH `0.1.7-rc.2` 支持 `package.json` 的 `icon` 字段，但只接受不超过 256 KiB 的 SVG、PNG、JPEG 或 WebP。项目主视觉是 AVIF，本插件继续通过局部样式覆盖 `data-plugin-package="dsh-persona"` 的卡片图标容器，以及 `data-plugin-detail="dsh-persona"` 顶部 `data-window-drag` 栏内的图标容器。
+
+TODO：提供符合 `icon` 字段要求的图标文件，改用宿主原生图标。
 
 图片加载成功后显示背景并隐藏默认 SVG；加载失败时保留默认图标。Cordis effect 在停用插件时清理样式和图片回调。该定位依赖 DSH 的 DOM 层次，升级宿主时需要复查。
 
@@ -38,4 +40,4 @@ DSH `0.1.6-alpha.2` 在插件卡片和详情页绘制固定图标，没有公开
 
 ## 上游参考
 
-[配置页类型](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.6-alpha.2/packages/client/ui-plugin-manager/src/client/slot-contract.ts) 定义可传入的属性，[插件管理页实现](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.6-alpha.2/packages/client/ui-plugin-manager/src/client/PluginManagerPage.tsx) 定义图标容器。
+[配置页类型](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.7-rc.2/packages/client/ui-plugin-manager/src/client/slot-contract.ts) 定义可传入的属性，[插件管理页实现](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.7-rc.2/packages/client/ui-plugin-manager/src/client/PluginManagerPage.tsx) 定义图标容器。

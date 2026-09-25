@@ -22,7 +22,7 @@ Persona 组通过稳定 ID 引用，使用该组当前已保存的模型成员�
 
 ## 系统提示词注入
 
-适配目标为 DSH `dsh-v0.1.6-alpha.2`。`system-prompt/assemble` 在每个模型步骤重新组装提示词。官方 `installModelSelection` 在这个 waterfall 中捕获该步骤的模型，并把相同选择用于后续请求。
+适配目标为 DSH `0.1.7-rc.2`。`system-prompt/assemble` 在每个模型步骤重新组装提示词。官方 `installModelSelection` 在这个 waterfall 中捕获该步骤的模型，并把相同选择用于后续请求。
 
 每次组装使用开始时已保存的规则与分组快照，避免异步组装期间的编辑改变本次匹配。组件从下游组装结果的 `variables.provider`、`variables.model` 读取本次路由，将匹配正文追加为 `interpolate: false` 的系统提示词段。工具、运行时上下文和请求路由由宿主处理。实现见 [runtime.mjs](../src/modules/prompts/runtime.mjs)。
 
@@ -32,9 +32,9 @@ DSH 的 `complete: true` 完整提示词在 waterfall 之后具有最终决定�
 
 ## 组件与依赖
 
-`dsh-persona-prompts` 是同一个安装包中的 Host 组件，入口为 `dsh-persona/prompts`。它需要 `settings`、`systemPrompt` 和 `dshPersona` 服务。关闭 Persona 组件会使提示词组件等待依赖；重新启用后可恢复，已有配置继续保留。
+`dsh-persona-prompts` 是同一个安装包中的 Host 组件，入口为 `dsh-persona/prompts`。它需要 `systemPrompt` 和 `dshPersona` 服务；`settings` 服务存在时，组件关闭 DSH 的生成表单并检查旧版设置。关闭 Persona 组件会使提示词组件等待依赖；重新启用后可恢复，已有配置继续保留。
 
-配置保存在 DSH settings 的 `dsh-persona-prompts.document` 中，使用独立的 `version: 1` 文档。它通过 Persona ID 引用分组，不迁移或复制 `dsh-persona-avatar` 设置。
+配置保存在 profile 条目 `dsh-persona-prompts` 的 volatile 字段 `document` 中，使用独立的 `version: 1` 文档。它通过 Persona ID 引用分组，不复制 Persona 组件的配置。写入经过组件校验，无法解析的文档会被拒绝。从 DSH `0.1.6` 升级时，旧 `settings.yaml` 中的同名段会迁移到这个条目，见[宿主接入](INTEGRATION.md#从-dsh-016-升级)。
 
 配置表单由包的浏览器入口注册到 `plugins.row.config`，key 为 `dsh-persona#dsh-persona-prompts`；提示词注入在 Host 执行。Host 组件关闭时，配置页显示不可用并禁止编辑。
 
@@ -52,6 +52,6 @@ python scripts/prompts-smoke.py
 
 ## 接口依据
 
-- [系统提示词契约](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.6-alpha.2/packages/core/system-prompt/src/index.ts)
-- [模型选择与请求绑定](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.6-alpha.2/packages/core/agent/src/model-selection.ts)
-- [插件配置与组件页面](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.6-alpha.2/packages/client/ui-plugin-manager/README.md)
+- [系统提示词契约](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.7-rc.2/packages/core/system-prompt/src/index.ts)
+- [模型选择与请求绑定](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.7-rc.2/packages/core/agent/src/model-selection.ts)
+- [插件配置与组件页面](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.7-rc.2/packages/client/ui-plugin-manager/README.md)

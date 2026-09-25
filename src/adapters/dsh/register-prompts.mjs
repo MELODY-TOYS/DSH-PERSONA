@@ -8,7 +8,7 @@ import { PERSONA_LOCALE_NAMESPACE } from '../../locales.mjs';
 export function registerPromptSettings(ctx, Component) {
   const controller = new PromptSettingsController(
     bindComponentSettings(ctx, PROMPTS_NAMESPACE),
-    ctx.settingsScope.bind({ namespace: AVATAR_NAMESPACE }),
+    ctx.configForms.get(AVATAR_NAMESPACE),
     () => ctx.remote.session.modelCatalog(),
   );
   ctx.effect(() => () => controller.dispose(), 'dsh-persona: prompt settings');

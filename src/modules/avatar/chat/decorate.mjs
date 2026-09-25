@@ -4,18 +4,55 @@ import { resolvePersona } from '../../../core/persona.mjs';
 import { modelForNode } from '../../../adapters/dsh/model-history.mjs';
 import styles from './messages.css';
 
-const MARKERS = '[data-chat-flow], [data-chat-flow-key], [data-submission-echo], [data-pending-steering]';
-const ROWS = [
-  '[data-chat-flow] > [data-chat-flow-kind="user"]',
-  '[data-chat-flow] > [data-chat-flow-kind="steering"]',
-  '[data-chat-flow] > [data-chat-flow-kind="assistant-step"]',
-  '[data-chat-flow] > [data-submission-echo]',
-  '[data-chat-flow] > [data-pending-steering]',
-].join(',');
-const OWN_ATTRIBUTES = ['data-dsp-chat-role', 'data-dsp-chat-name', 'data-dsp-chat-initials', 'data-dsp-chat-image'];
+const FLOW = '[data-chat-flow]';
+const STEP = '[data-chat-flow-kind="assistant-step"][data-chat-node-key]';
+const MARKERS = '[data-chat-flow], [data-chat-flow-key], [data-chat-node-key], [data-chat-turn], [data-submission-echo], [data-pending-steering]';
+const USER_KINDS = new Set(['user', 'steering']);
+// A trigger opens a Turn without a user message; it separates runs and keeps its native look.
+const NEUTRAL_KINDS = new Set(['turn-trigger']);
+const OWN_ATTRIBUTES = ['data-dsp-chat-role', 'data-dsp-chat-lead', 'data-dsp-chat-name', 'data-dsp-chat-initials', 'data-dsp-chat-image'];
+const VISIBILITY = ['hidden', 'data-turn-process-hidden'];
+/** A grouped part's flow key is not a node key; data-chat-node-key always names the node. */
+const nodeKey = row => row.dataset.chatNodeKey ?? row.dataset.chatFlowKey;
+
+/** Rows of the outermost flows only; process groups nest their members in another flow. */
+function topRows(root) {
+  return [...root.querySelectorAll(FLOW)]
+    .filter(flow => flow.closest('[data-conversation-scroll]') === root && !root.contains(flow.parentElement.closest(FLOW)))
+    .flatMap(flow => [...flow.children]);
+}
+function side(row) {
+  const kind = row.dataset.chatFlowKind;
+  if (USER_KINDS.has(kind) || row.hasAttribute('data-submission-echo') || row.hasAttribute('data-pending-steering')) return 'user';
+  if (NEUTRAL_KINDS.has(kind) || (kind === undefined && !row.hasAttribute('data-chat-group-key'))) return null;
+  // Unknown kinds inside a Turn belong to the reply, so a new DSH wrapper keeps the identity.
+  return 'assistant';
+}
+const visible = row => !VISIBILITY.some(name => row.hasAttribute(name)) && !row.matches(':empty');
 
 /**
- * Decorate alpha.2's semantic row containers without replacing renderers or moving their children.
+ * Split the transcript into identity runs: each user row stands alone; consecutive assistant rows of one
+ * Turn form one reply. DSH 0.1.7 renders a reply as a Turn status row, a process group and a response part.
+ */
+function identityRuns(rows) {
+  const runs = [];
+  let open = null;
+  for (const row of rows) {
+    const role = side(row);
+    const turn = row.dataset.chatTurn ?? null;
+    if (role === 'assistant' && open && open.turn === turn) { open.rows.push(row); continue; }
+    open = role === 'assistant' ? { role, turn, rows: [row] } : null;
+    if (role) runs.push(open ?? { role, turn, rows: [row] });
+  }
+  return runs;
+}
+function firstRecordAfter(seq, history) {
+  if (!Number.isFinite(seq)) return null;
+  return history.find(record => record.seq > seq)?.model ?? null;
+}
+
+/**
+ * Decorate DSH 0.1.7's semantic row containers without replacing renderers or moving their children.
  * Only confirmed settings are used. The disposer restores the native rows and cancels pending work.
  */
 export function decorateChat(root, { settings, chat, models }) {
@@ -70,14 +107,10 @@ export function decorateChat(root, { settings, chat, models }) {
     const route = modelForNode(source.getSnapshot(), models.getSnapshot());
     return route ? JSON.stringify([route.provider, route.model]) : null;
   }
-  // Chat publishes node changes separately from list order. Unattributed rows need subscriptions too.
-  function watchNodes(current, candidates) {
+  // Chat publishes node changes separately from list order. Unattributed steps need subscriptions too.
+  function watchNodes(current, keys) {
     const wanted = new Map();
-    if (current) for (const row of candidates) {
-      if (row.dataset.chatFlowKind !== 'assistant-step' || !row.dataset.chatFlowKey) continue;
-      const key = row.dataset.chatFlowKey;
-      wanted.set(key, current.nodes.source(key));
-    }
+    if (current) for (const key of keys) wanted.set(key, current.nodes.source(key));
     for (const [key, entry] of nodeSubscriptions) if (wanted.get(key) !== entry.source) {
       entry.off(); nodeSubscriptions.delete(key);
     }
@@ -94,52 +127,76 @@ export function decorateChat(root, { settings, chat, models }) {
       nodeSubscriptions.set(key, entry);
     }
   }
+  /** The first attributed step of a run names its model; a live run without steps yet uses its next request. */
+  function runRoute(run, current, history, live) {
+    for (const key of run.steps) {
+      const route = modelForNode(current?.nodes.get(key), history);
+      if (route) return route;
+    }
+    if (!live || run.steps.length) return null;
+    const anchor = run.rows.map(row => row.dataset.chatNodeKey).find(Boolean);
+    return anchor === undefined ? null : firstRecordAfter(current?.nodes.get(anchor)?.anchorSeq, history);
+  }
+  function apply(row, desired) {
+    const before = rows.get(row);
+    if (before && before.name === desired.name && before.avatar === desired.avatar && before.ready === desired.ready &&
+      before.role === desired.role && before.lead === desired.lead) return;
+    forget(row);
+    const record = { ...desired,
+      group: desired.lead && !row.hasAttribute('role'),
+      label: desired.lead && !row.hasAttribute('aria-label') };
+    if (record.group) row.setAttribute('role', 'group');
+    if (record.label) row.setAttribute('aria-label', desired.name);
+    row.setAttribute('data-dsp-chat-role', desired.role);
+    if (desired.lead) {
+      row.setAttribute('data-dsp-chat-lead', '');
+      row.setAttribute('data-dsp-chat-name', desired.name);
+      row.setAttribute('data-dsp-chat-initials', initials(desired.name));
+      if (desired.ready) {
+        row.style.setProperty('--dsp-message-avatar', `url("${desired.avatar}")`);
+        row.setAttribute('data-dsp-chat-image', '');
+      }
+    }
+    rows.set(row, record);
+  }
   function refresh() {
     frame = 0;
     if (disposed) return;
     readSettings();
     const current = chat.getSnapshot(), history = models.getSnapshot();
-    const candidates = new Set([...root.querySelectorAll(ROWS)]
-      .filter(row => row.closest('[data-conversation-scroll]') === root));
-    watchNodes(current, candidates);
-    for (const row of rows.keys()) if (!candidates.has(row) || !config) forget(row);
-    if (!config) return;
-    for (const row of candidates) {
-      const role = row.dataset.chatFlowKind === 'assistant-step' ? 'assistant' : 'user';
+    const runs = identityRuns(topRows(root));
+    for (const run of runs) {
+      run.steps = [...new Set(run.role === 'assistant' ? run.rows.flatMap(row =>
+        [row, ...row.querySelectorAll(STEP)].filter(el => el.matches(STEP)).map(nodeKey)) : [])];
+    }
+    watchNodes(current, runs.flatMap(run => run.steps));
+    const desired = new Map(), last = runs.findLast(run => run.role === 'assistant');
+    if (config) for (const run of runs) {
       let identity = config.user;
-      if (role === 'assistant') {
-        const node = current?.nodes.get(row.dataset.chatFlowKey);
-        const route = modelForNode(node, history);
+      if (run.role === 'assistant') {
+        const route = runRoute(run, current, history, run === last);
         identity = route ? resolvePersona(config.library, route) : null;
       }
-      if (!identity) { forget(row); continue; }
-      const ready = imageReady(identity.avatar), before = rows.get(row);
-      if (before && before.name === identity.name && before.avatar === identity.avatar && before.ready === ready && before.role === role) continue;
-      const record = { name: identity.name, avatar: identity.avatar, role, ready,
-        group: before?.group ?? !row.hasAttribute('role'),
-        label: before?.label ?? !row.hasAttribute('aria-label') };
-      if (record.group) row.setAttribute('role', 'group');
-      if (record.label) row.setAttribute('aria-label', identity.name);
-      row.setAttribute('data-dsp-chat-role', role);
-      row.setAttribute('data-dsp-chat-name', identity.name);
-      row.setAttribute('data-dsp-chat-initials', initials(identity.name));
-      if (ready) {
-        row.style.setProperty('--dsp-message-avatar', `url("${identity.avatar}")`);
-        row.setAttribute('data-dsp-chat-image', '');
-      } else {
-        row.style.removeProperty('--dsp-message-avatar'); row.removeAttribute('data-dsp-chat-image');
-      }
-      rows.set(row, record);
+      if (!identity) continue;
+      const ready = imageReady(identity.avatar);
+      const lead = run.rows.find(visible);
+      for (const row of run.rows) desired.set(row, { name: identity.name, avatar: identity.avatar, role: run.role, ready, lead: row === lead });
     }
+    for (const row of rows.keys()) if (!desired.has(row)) forget(row);
+    for (const [row, value] of desired) apply(row, value);
   }
-  // Streaming text mutations do not need a rescan; row insertion/removal and identity changes do.
+  // Streaming text mutations do not need a rescan; row insertion/removal, identity and row visibility changes do.
   const relevant = node => node.nodeType === 1 && (node.matches(MARKERS) || node.querySelector(MARKERS));
+  const isRow = node => node.nodeType === 1 && node.parentElement?.matches(FLOW);
   const observer = new win.MutationObserver(changes => {
     if (changes.some(change => change.type === 'attributes'
-      || [...change.addedNodes, ...change.removedNodes].some(relevant))) schedule();
+      ? !VISIBILITY.includes(change.attributeName) || isRow(change.target)
+      // A row that DSH filled after rendering it empty can become the visible lead.
+      : isRow(change.target) || [...change.addedNodes, ...change.removedNodes].some(relevant))) schedule();
   });
   observer.observe(root, { childList: true, subtree: true, attributes: true,
-    attributeFilter: ['data-chat-flow-key', 'data-chat-flow-kind', 'data-submission-echo', 'data-pending-steering'] });
+    attributeFilter: ['data-chat-flow-key', 'data-chat-node-key', 'data-chat-group-key', 'data-chat-flow-kind', 'data-chat-turn',
+      'data-submission-echo', 'data-pending-steering', ...VISIBILITY] });
   let lastOrder, lastNodes, lastModels;
   const onChat = () => {
     const current = chat.getSnapshot();

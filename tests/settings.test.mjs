@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 import { ComponentSettingsController } from '../src/core/component-settings.mjs';
 import { AvatarSettingsController, avatarModelCandidates } from '../src/modules/avatar/config-controller.mjs';
-import { defaultAvatarSettings, parseAvatarSettings, AVATAR_NAMESPACE } from '../src/modules/avatar/settings.mjs';
+import { defaultAvatarSettings, parseAvatarSettings, AVATAR_NAMESPACE, AVATAR_LEGACY_SECTION } from '../src/modules/avatar/settings.mjs';
 import { registerPersonaSettings } from '../src/adapters/dsh/register-settings.mjs';
 import { components, reservedComponents } from '../src/modules/components.mjs';
 
@@ -89,7 +89,7 @@ test('corrupt persisted state is not overwritten by defaults', async () => {
   c.edit(changeName('不可写')); assert.equal(await c.save(), false); assert.equal(scope.writes.length, 0); c.dispose();
 });
 test('component namespace and settings validation are independent of future components', () => {
-  assert.equal(AVATAR_NAMESPACE, 'dsh-persona-avatar'); assert.deepEqual(components.map(c => c.id), ['avatar', 'prompts']);
+  assert.equal(AVATAR_NAMESPACE, 'dsh-persona'); assert.equal(AVATAR_LEGACY_SECTION, 'dsh-persona-avatar'); assert.deepEqual(components.map(c => c.id), ['avatar', 'prompts']);
   assert.equal(reservedComponents.every(c => c.status === 'reserved'), true);
   const old = { ...configured(), version: 2, enabled: false, showUser: false, showAssistant: false, showNames: false, size: 28 };
   const next = parseAvatarSettings(old);
@@ -122,7 +122,7 @@ function contextFixture() {
   const scope = scopeFixture(), entries = [], effects = [], events = new Set();
   const listen = (name, fn) => { const entry = { name, fn }; events.add(entry); return () => events.delete(entry); };
   const ctx = {
-    settingsScope: { bind(options) { assert.equal(options.namespace, AVATAR_NAMESPACE); return scope; } },
+    configForms: { get(entryId) { assert.equal(entryId, AVATAR_NAMESPACE); return scope; } },
     effect(fn) { effects.push(fn()); }, on: listen,
     remote: { session: { modelCatalog: catalog }, $on: listen },
     slots: {
@@ -153,7 +153,9 @@ test('manifest package key, bundle row and native artifact agree', () => {
   const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
   const patch = readFileSync(new URL('../cordis.patch.yml', import.meta.url), 'utf8');
   assert.equal(pkg.name, 'dsh-persona'); assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml');
-  assert.equal(pkg.engines.dsh, '0.1.6-alpha.2'); assert.match(patch, /name: dsh-persona/);
+  // DSH 0.1.7 enforces @deepseek-ai/dsh peers; profiles never install them.
+  assert.equal(pkg.engines.dsh, '>=0.1.7-rc.2 <0.1.8-0'); assert.equal(pkg.peerDependencies['@deepseek-ai/dsh'], pkg.engines.dsh);
+  assert.equal(pkg.peerDependenciesMeta['@deepseek-ai/dsh'].optional, true); assert.match(patch, /name: dsh-persona/);
   assert.equal(pkg.exports['./client'], './lib/client.js'); assert.equal(pkg.dsh.client.platform, 'web');
   assert.ok(!readFileSync(new URL('../src/adapters/dsh/register-settings.mjs', import.meta.url), 'utf8').includes('plugins.bundle.config'));
 });

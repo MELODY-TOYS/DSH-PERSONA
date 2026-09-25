@@ -1,12 +1,12 @@
-[data-dsp-chat-scope] [data-dsp-chat-role]:not([hidden]):not([data-turn-process-hidden]) {
+[data-dsp-chat-scope] [data-dsp-chat-role="user"]:not([hidden]):not([data-turn-process-hidden]):not(:empty) { padding-right: calc(__AVATAR_SIZE__px + 12px); }
+[data-dsp-chat-scope] [data-dsp-chat-role="assistant"]:not([hidden]):not([data-turn-process-hidden]):not(:empty) { padding-left: calc(__AVATAR_SIZE__px + 12px); }
+[data-dsp-chat-scope] [data-dsp-chat-lead]:not([hidden]):not([data-turn-process-hidden]):not(:empty) {
   position: relative;
   box-sizing: border-box;
   min-height: __AVATAR_SIZE__px;
   padding-top: 24px;
 }
-[data-dsp-chat-scope] [data-dsp-chat-role="user"]:not([hidden]):not([data-turn-process-hidden]) { padding-right: calc(__AVATAR_SIZE__px + 12px); }
-[data-dsp-chat-scope] [data-dsp-chat-role="assistant"]:not([hidden]):not([data-turn-process-hidden]) { padding-left: calc(__AVATAR_SIZE__px + 12px); }
-[data-dsp-chat-scope] [data-dsp-chat-role]:not([hidden]):not([data-turn-process-hidden])::before {
+[data-dsp-chat-scope] [data-dsp-chat-lead]:not([hidden]):not([data-turn-process-hidden]):not(:empty)::before {
   content: attr(data-dsp-chat-initials);
   position: absolute; top: 0; width: __AVATAR_SIZE__px; height: __AVATAR_SIZE__px;
   display: flex; align-items: center; justify-content: center;
@@ -16,14 +16,14 @@
   color: var(--dsw-alias-label-primary, CanvasText); font: 500 14px/1 sans-serif;
   pointer-events: none;
 }
-[data-dsp-chat-scope] [data-dsp-chat-image]:not([hidden]):not([data-turn-process-hidden])::before { content: ''; }
-[data-dsp-chat-scope] [data-dsp-chat-role]:not([hidden]):not([data-turn-process-hidden])::after {
+[data-dsp-chat-scope] [data-dsp-chat-lead][data-dsp-chat-image]:not([hidden]):not([data-turn-process-hidden]):not(:empty)::before { content: ''; }
+[data-dsp-chat-scope] [data-dsp-chat-lead]:not([hidden]):not([data-turn-process-hidden]):not(:empty)::after {
   content: attr(data-dsp-chat-name);
   position: absolute; top: 1px; max-width: calc(100% - __AVATAR_SIZE__px - 12px);
   font: 500 12px/18px sans-serif; color: var(--dsw-alias-label-secondary, CanvasText);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none;
 }
-[data-dsp-chat-scope] [data-dsp-chat-role="user"]::before { right: 0; }
-[data-dsp-chat-scope] [data-dsp-chat-role="user"]::after { right: calc(__AVATAR_SIZE__px + 12px); }
-[data-dsp-chat-scope] [data-dsp-chat-role="assistant"]::before { left: 0; }
-[data-dsp-chat-scope] [data-dsp-chat-role="assistant"]::after { left: calc(__AVATAR_SIZE__px + 12px); }
+[data-dsp-chat-scope] [data-dsp-chat-role="user"][data-dsp-chat-lead]::before { right: 0; }
+[data-dsp-chat-scope] [data-dsp-chat-role="user"][data-dsp-chat-lead]::after { right: calc(__AVATAR_SIZE__px + 12px); }
+[data-dsp-chat-scope] [data-dsp-chat-role="assistant"][data-dsp-chat-lead]::before { left: 0; }
+[data-dsp-chat-scope] [data-dsp-chat-role="assistant"][data-dsp-chat-lead]::after { left: calc(__AVATAR_SIZE__px + 12px); }

@@ -8,7 +8,7 @@ export const BRAND = Object.freeze({
 
 export const ICON_SEATS = [
   '[data-plugin-package="dsh-persona"] > div:first-of-type > span:first-child[aria-hidden="true"]',
-  '[data-plugin-detail="dsh-persona"] > div:first-of-type > span:first-child[aria-hidden="true"]',
+  '[data-plugin-detail="dsh-persona"] > [data-window-drag] > div > span:first-child[aria-hidden="true"]',
 ].join(',\n');
 
 /** Keep the host icon until the project image has decoded. */

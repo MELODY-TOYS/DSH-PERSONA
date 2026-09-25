@@ -1,8 +1,9 @@
 [data-dso-host] { isolation: isolate; }
-[data-plugin-package="dsh-persona"] button[aria-label="查看 persona"],
+[data-plugin-package="dsh-persona"] button[aria-label="查看 dsh-persona"],
+[data-plugin-package="dsh-persona"] button[aria-label="View dsh-persona"],
 [data-dso-part=title],
 [data-dso-open] > span:first-child,
-[data-dso-detail=component] > [data-dso-part=crumb] { text-transform: uppercase; }
+[data-dso-detail=component] [data-dso-part=crumb] { text-transform: uppercase; }
 .dsp-click-bubbles {
   position: fixed; z-index: 8; overflow: hidden; pointer-events: none; contain: strict;
   max-width: none !important; margin: 0 !important; padding: 0 !important;
@@ -37,7 +38,7 @@
   position: relative; min-width: 0; width: 100%; max-width: 960px !important;
   color: var(--dsw-alias-label-primary, CanvasText); letter-spacing: 0; container-type: inline-size;
 }
-[data-dso-detail] > [data-dso-part=crumb] { align-self: flex-start; font-size: 12px; margin-bottom: 8px; }
+[data-dso-detail] [data-dso-part=crumb] { align-self: flex-start; font-size: 12px; margin-bottom: 8px; }
 [data-dso-part=head], [data-dso-part=identity] { margin-top: 0 !important; }
 [data-dso-part=icon] { width: 40px !important; height: 40px !important; border-radius: 8px !important; }
 [data-dso-part=title] { font-size: 28px !important; line-height: 1.25 !important; font-weight: 600 !important; letter-spacing: 0; overflow-wrap: anywhere; }

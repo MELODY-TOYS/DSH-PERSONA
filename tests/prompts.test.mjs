@@ -200,7 +200,7 @@ test('catalogue refresh preserves a draft and ignores responses after disposal',
 test('native row settings register under the prompts row and clean up subscriptions', () => {
   const prompts = scope(config()), personas = scope(identity()), entries = [], effects = [];
   const ctx = {
-    settingsScope: { bind: ({ namespace }) => namespace === PROMPTS_NAMESPACE ? prompts : personas },
+    configForms: { get: entryId => entryId === PROMPTS_NAMESPACE ? prompts : personas },
     effect: fn => effects.push(fn()), on: () => () => {},
     remote: { $on: () => () => {}, session: { modelCatalog: catalog } },
     slots: { inject: (name, fn) => { assert.equal(name, 'plugins.row.config'); effects.push(fn()); }, register: (options, component) => { entries.push({ options, component }); return () => entries.pop(); } },

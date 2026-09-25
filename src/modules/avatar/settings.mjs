@@ -1,6 +1,10 @@
 /** User settings and the Persona library share one revision-checked document. */
 import { parseState, parseIdentity } from '../../core/persona.mjs';
-export const AVATAR_NAMESPACE = 'dsh-persona-avatar';
+/** DSH 0.1.7 keys live settings by profile entry id. */
+export const AVATAR_NAMESPACE = 'dsh-persona';
+/** DSH 0.1.6 settings.yaml section, read once by the legacy import. */
+export const AVATAR_LEGACY_SECTION = 'dsh-persona-avatar';
+export const AVATAR_DOCUMENT_LIMIT = 4_000_000;
 export const CHAT_AVATAR_SIZE = 40;
 export function defaultAvatarSettings() {
   return { version: 3, user: { name: '你', avatar: null },

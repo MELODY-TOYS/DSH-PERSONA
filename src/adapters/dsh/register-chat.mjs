@@ -6,7 +6,7 @@ import { MODEL_TARGET, modelHeaderDefinition, createModelHistory } from './model
 export function registerChatAvatars(ctx, Component) {
   ctx.uiConversation.events.register(modelHeaderDefinition);
   ctx.uiConversation.views.register({ target: MODEL_TARGET, create: createModelHistory, isActive: () => false });
-  const settings = ctx.settingsScope.bind({ namespace: AVATAR_NAMESPACE });
+  const settings = ctx.configForms.get(AVATAR_NAMESPACE);
   const mounts = new Set();
   ctx.effect(() => () => { for (const off of mounts) off(); mounts.clear(); }, 'dsh-persona: chat avatars');
   ctx.slots.inject('conversation.composer.dock', () => ctx.slots.register({

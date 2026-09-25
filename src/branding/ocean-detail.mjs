@@ -69,7 +69,7 @@ export function installOceanDetails(doc, { artwork, loopVideo }) {
   }
   function decorate(detail) {
     mark(detail, 'data-dso-detail', detail.hasAttribute('data-plugin-detail') ? 'package' : 'component');
-    const crumb = detail.querySelector(':scope > button'); mark(crumb, 'data-dso-part', 'crumb');
+    const crumb = detail.querySelector(':scope > [data-window-drag] > button'); mark(crumb, 'data-dso-part', 'crumb');
     const head = crumb?.nextElementSibling; mark(head, 'data-dso-part', 'head');
     mark(head?.querySelector(':scope > span[aria-hidden=true]'), 'data-dso-part', 'icon');
     const title = detail.querySelector(':scope > div > div > h3');

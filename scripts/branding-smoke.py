@@ -1,11 +1,11 @@
-"""Pinned alpha.2 icon-seat smoke test. This does not run a DSH host."""
+"""Pinned 0.1.7-rc.2 icon-seat smoke test. This does not run a DSH host."""
 from pathlib import Path
 import json
 import shutil
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-report = {'environment': 'Chromium about:blank; standalone preview and alpha.2 icon-seat DOM fixtures; no DSH host', 'checks': []}
+report = {'environment': 'Chromium about:blank; standalone preview and 0.1.7-rc.2 icon-seat DOM fixtures; no DSH host', 'checks': []}
 
 def check(name):
     report['checks'].append({'name': name, 'passed': True})
@@ -26,7 +26,7 @@ with sync_playwright() as p:
     check('Installed card uses the project artwork in the pinned icon seat')
 
     page.click('#open-persona')
-    detail = page.locator('[data-plugin-detail="dsh-persona"] > div:first-of-type > span[aria-hidden]')
+    detail = page.locator('[data-plugin-detail="dsh-persona"] > [data-window-drag] > div > span[aria-hidden]')
     assert detail.evaluate('(n) => getComputedStyle(n).backgroundImage') == card.evaluate('(n) => getComputedStyle(n).backgroundImage')
     assert page.locator('[data-dsp-brand-cover]').count() == 0
     assert page.get_by_text('查看全图').count() == 0
@@ -39,6 +39,11 @@ with sync_playwright() as p:
     assert video.evaluate('(v) => [v.loop, v.muted, v.controls]') == [True, True, False]
     assert page.locator('.dso-layer[aria-hidden="true"]').count() == 1
     check('Detail background is fixed by the design and exposes no user controls')
+
+    # DSH 0.1.7 wraps the crumb and icon row in one data-window-drag strip.
+    assert page.locator('#back-to-plugins').get_attribute('data-dso-part') == 'crumb'
+    assert page.locator('[data-dso-part=head] > [data-dso-part=icon]').count() == 1
+    check('Detail decoration finds the crumb and icon inside the window-drag strip')
 
     assert page.locator('.dsp-persona-item').count() == 0
     assert page.locator('[data-avatar=user] img').count() == 0
