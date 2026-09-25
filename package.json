@@ -1,6 +1,6 @@
 {
   "name": "dsh-persona",
-  "version": "0.1.0-alpha.3",
+  "version": "0.1.0-alpha.4",
   "private": true,
   "description": "为用户和模型设置名称、头像与按模型应用的提示词。",
   "type": "module",
@@ -36,7 +36,7 @@
   },
   "engines": {
     "node": ">=22.19.0",
-    "dsh": "0.1.6-alpha.2"
+    "dsh": ">=0.1.7-rc.2 <0.1.8-0"
   },
   "dsh": {
     "bundle": {
@@ -56,11 +56,21 @@
     }
   },
   "dependencies": {
-    "@deepseek-ai/schemastery": "3.18.2",
-    "three": "0.186.0"
+    "@deepseek-ai/schemastery": "3.18.4",
+    "three": "0.186.0",
+    "yaml": "2.9.1"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh": ">=0.1.7-rc.2 <0.1.8-0"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh": {
+      "optional": true
+    }
   },
   "devDependencies": {
-    "@deepseek-ai/cordis": "4.0.2",
+    "@deepseek-ai/cordis": "4.0.4",
+    "@deepseek-ai/cosmokit": "1.8.5",
     "typescript": "5.8.3"
   },
   "license": "MIT"

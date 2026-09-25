@@ -15,9 +15,15 @@ body { font-family: sans-serif; margin: 24px; }
 [data-turn-process-hidden] { display: none; }
 </style>
 <div data-conversation-scroll><div data-chat-flow>
-<div data-chat-flow-key="u1" data-chat-flow-kind="user">测试用户消息</div>
-<div data-chat-flow-key="a1" data-chat-flow-kind="assistant-step"><details>
+<div data-chat-flow-key="u1" data-chat-node-key="u1" data-chat-flow-kind="user">测试用户消息</div>
+<div data-chat-group-key='["process","a1","reasoning"]' data-chat-flow-key='["process","a1","reasoning"]' data-step-process>
+<div data-step-process-body><div data-step-process-content data-chat-flow="">
+<div data-chat-flow-key='["a1","reasoning"]' data-chat-node-key="a1" data-chat-group-part="reasoning"
+  data-chat-flow-kind="assistant-step"><p>思考过程</p></div>
+</div></div></div>
+<div data-chat-flow-key="a1" data-chat-node-key="a1" data-chat-group-part="response" data-chat-flow-kind="assistant-step"><details>
 <summary>显示更多内容</summary><p>完整回复</p></details></div>
+<div data-chat-flow-key="a0" data-chat-node-key="a0" data-chat-group-part="response" data-chat-flow-kind="assistant-step"></div>
 </div></div>
 <script type="module">
 import { decorateChat } from '/src/modules/avatar/chat/decorate.mjs';
@@ -29,7 +35,7 @@ function source(initial) {
     set(next) { value = next; for (const fn of [...listeners]) fn(); } };
 }
 // ChatSnapshot.order and the outer source can stay unchanged on a node-only update.
-// See dsh-v0.1.6-alpha.2 ui-chat/conversation-nodes/chat-snapshot-builder.ts.
+// See dsh-v0.1.7-rc.2 ui-chat/conversation-nodes/chat-snapshot-builder.ts.
 function nodeStore() {
   const sources = new Map();
   const getSource = key => {
@@ -54,7 +60,8 @@ const nodes = nodeStore();
 const node = (seq, finalRoute) => ({ key: 'a1', kind: 'assistant-step', anchorSeq: seq,
   data: finalRoute ? { finalNode: { requestConfig: finalRoute } } : {} });
 nodes.set('a1', node(20));
-const chat = source({ order: ['u1', 'a1'], nodes });
+nodes.set('a0', { ...node(20, route), key: 'a0' });
+const chat = source({ order: ['u1', 'a1', 'a0'], nodes });
 const models = source([]);
 const root = document.querySelector('[data-conversation-scroll]');
 const stop = decorateChat(root, { settings, chat, models });
@@ -122,6 +129,19 @@ def run():
             page.wait_for_function('document.querySelector("[data-chat-flow-key=a1]").hasAttribute("data-dsp-chat-image")')
             assert page.locator('[data-chat-flow-key=a1]').evaluate('(row) => getComputedStyle(row, "::after").content') == '"Agent A"'
             check('A node-only model update restores the name and decoded avatar')
+
+            reasoning = page.locator('[data-chat-group-part=reasoning]')
+            assert reasoning.get_attribute('data-dsp-chat-role') is None
+            assert page.evaluate('fixture.nodes.source("a1").listeners.size') == 1
+            check('A process group keeps its reasoning part native while the response part carries the identity')
+
+            empty = page.locator('[data-chat-flow-key=a0]')
+            assert empty.get_attribute('data-dsp-chat-name') == 'Agent A'
+            assert empty.evaluate('(row) => [getComputedStyle(row, "::before").content, getComputedStyle(row).paddingLeft]') == ['none', '0px']
+            empty.evaluate('(row) => row.remove()')
+            settle()
+            assert page.evaluate('fixture.nodes.source("a0").listeners.size') == 0
+            check('An empty response seat draws no avatar')
 
             page.locator('summary').click()
             settle()
@@ -191,6 +211,8 @@ def run():
             page.evaluate('''() => {
                 const replacement = document.createElement('div');
                 replacement.dataset.chatFlowKey = 'a1';
+                replacement.dataset.chatNodeKey = 'a1';
+                replacement.dataset.chatGroupPart = 'response';
                 replacement.dataset.chatFlowKind = 'assistant-step';
                 replacement.innerHTML = '<details><summary>显示更多内容</summary><p>完整回复</p></details>';
                 fixture.root.querySelector('[data-chat-flow-key=a1]').replaceWith(replacement);
@@ -200,7 +222,8 @@ def run():
             check('Replacing a row retains one keyed subscription')
 
             page.evaluate('''() => {
-                fixture.root.querySelector('[data-chat-flow-key=a1]').dataset.chatFlowKey = 'a2';
+                const row = fixture.root.querySelector('[data-chat-flow-key=a1]');
+                row.dataset.chatFlowKey = 'a2'; row.dataset.chatNodeKey = 'a2';
                 fixture.nodes.set('a2', fixture.node(20, fixture.route));
             }''')
             settle()
@@ -216,7 +239,7 @@ def run():
 
             page.evaluate('''() => {
                 const row = document.createElement('div');
-                row.dataset.chatFlowKind = 'assistant-step'; row.dataset.chatFlowKey = 'a1';
+                row.dataset.chatFlowKind = 'assistant-step'; row.dataset.chatFlowKey = 'a1'; row.dataset.chatNodeKey = 'a1';
                 fixture.root.querySelector('[data-chat-flow]').append(row);
             }''')
             settle()

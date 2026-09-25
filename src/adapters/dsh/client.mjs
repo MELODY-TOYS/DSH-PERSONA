@@ -7,7 +7,7 @@ import { installBrandIcons } from '../../branding/brand.mjs';
 import { installDetailBackgroundObserver } from '../../branding/detail-background.mjs';
 import { mountPromptSettings } from '../../modules/prompts/settings-view.mjs';
 import { registerPromptSettings } from './register-prompts.mjs';
-export const inject = ['slots', 'locale', 'settingsScope', 'remote', 'remote.session', 'sessions', 'uiConversation'];
+export const inject = ['slots', 'locale', 'configForms', 'remote', 'remote.session', 'sessions', 'uiConversation'];
 
 function AvatarConfigPage({ useAvatarSettings, avatarActions, localeService, t }) {
   const state = useAvatarSettings(snapshot => snapshot);

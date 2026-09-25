@@ -59,5 +59,5 @@ await mkdir(resolve(root, 'lib'), { recursive: true });
 await writeFile(resolve(root, 'preview/app.js'), preview);
 await writeFile(resolve(root, 'preview/standalone.html'), html);
 await writeFile(resolve(root, 'lib/client.js'), native);
-await writeFile(resolve(root, 'lib/index.js'), "export { name, inject, Config, apply } from '../src/adapters/dsh/host.mjs';\n");
+await writeFile(resolve(root, 'lib/index.js'), "export { name, Config, apply } from '../src/adapters/dsh/host.mjs';\n");
 console.log('Built native lazy-factory client, Host entry and standalone plugin-settings preview.');

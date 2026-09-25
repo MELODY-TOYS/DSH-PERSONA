@@ -87,8 +87,11 @@ export class ComponentSettingsController {
     const generation = ++this.#generation;
     this.#saving = true; this.#error = ''; this.#publish();
     let failure = '';
-    try { await this.#scope.mutate([{ op: 'set', path: ['document'], value: desired }], expectedRevision); }
-    catch (error) { failure = error.message || '自动保存失败。'; }
+    try {
+      // DSH resolves a refused write to false after reloading the Host state.
+      const accepted = await this.#scope.mutate([{ op: 'set', path: ['document'], value: desired }], expectedRevision);
+      if (accepted === false) failure = '宿主拒绝了这次保存，修改已保留。请重试，或重新载入配置。';
+    } catch (error) { failure = error.message || '自动保存失败。'; }
     if (this.#disposed || generation !== this.#generation) return false;
     this.#saving = false;
     if (this.#scope.getSnapshot().sourceId !== scope.sourceId) { this.#publish(); return false; }

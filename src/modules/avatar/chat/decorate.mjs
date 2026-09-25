@@ -4,18 +4,21 @@ import { resolvePersona } from '../../../core/persona.mjs';
 import { modelForNode } from '../../../adapters/dsh/model-history.mjs';
 import styles from './messages.css';
 
-const MARKERS = '[data-chat-flow], [data-chat-flow-key], [data-submission-echo], [data-pending-steering]';
+const MARKERS = '[data-chat-flow], [data-chat-flow-key], [data-chat-node-key], [data-submission-echo], [data-pending-steering]';
+// A process group repeats the step's reasoning part in a nested flow; the response part carries the reply.
 const ROWS = [
   '[data-chat-flow] > [data-chat-flow-kind="user"]',
   '[data-chat-flow] > [data-chat-flow-kind="steering"]',
-  '[data-chat-flow] > [data-chat-flow-kind="assistant-step"]',
+  '[data-chat-flow] > [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"])',
   '[data-chat-flow] > [data-submission-echo]',
   '[data-chat-flow] > [data-pending-steering]',
 ].join(',');
 const OWN_ATTRIBUTES = ['data-dsp-chat-role', 'data-dsp-chat-name', 'data-dsp-chat-initials', 'data-dsp-chat-image'];
+/** A grouped part's flow key is not a node key; data-chat-node-key always names the node. */
+const nodeKey = row => row.dataset.chatNodeKey ?? row.dataset.chatFlowKey;
 
 /**
- * Decorate alpha.2's semantic row containers without replacing renderers or moving their children.
+ * Decorate DSH 0.1.7's semantic row containers without replacing renderers or moving their children.
  * Only confirmed settings are used. The disposer restores the native rows and cancels pending work.
  */
 export function decorateChat(root, { settings, chat, models }) {
@@ -74,8 +77,8 @@ export function decorateChat(root, { settings, chat, models }) {
   function watchNodes(current, candidates) {
     const wanted = new Map();
     if (current) for (const row of candidates) {
-      if (row.dataset.chatFlowKind !== 'assistant-step' || !row.dataset.chatFlowKey) continue;
-      const key = row.dataset.chatFlowKey;
+      const key = nodeKey(row);
+      if (row.dataset.chatFlowKind !== 'assistant-step' || !key) continue;
       wanted.set(key, current.nodes.source(key));
     }
     for (const [key, entry] of nodeSubscriptions) if (wanted.get(key) !== entry.source) {
@@ -108,7 +111,7 @@ export function decorateChat(root, { settings, chat, models }) {
       const role = row.dataset.chatFlowKind === 'assistant-step' ? 'assistant' : 'user';
       let identity = config.user;
       if (role === 'assistant') {
-        const node = current?.nodes.get(row.dataset.chatFlowKey);
+        const node = current?.nodes.get(nodeKey(row));
         const route = modelForNode(node, history);
         identity = route ? resolvePersona(config.library, route) : null;
       }
@@ -139,7 +142,7 @@ export function decorateChat(root, { settings, chat, models }) {
       || [...change.addedNodes, ...change.removedNodes].some(relevant))) schedule();
   });
   observer.observe(root, { childList: true, subtree: true, attributes: true,
-    attributeFilter: ['data-chat-flow-key', 'data-chat-flow-kind', 'data-submission-echo', 'data-pending-steering'] });
+    attributeFilter: ['data-chat-flow-key', 'data-chat-node-key', 'data-chat-group-part', 'data-chat-flow-kind', 'data-submission-echo', 'data-pending-steering'] });
   let lastOrder, lastNodes, lastModels;
   const onChat = () => {
     const current = chat.getSnapshot();

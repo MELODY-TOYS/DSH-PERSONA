@@ -13,7 +13,7 @@ const defaults = () => ({ name: 'A' });
 function scope(initial = defaults()) {
   let snapshot = { status: 'ready', writable: true, revision: 1, sourceId: 'host-a',
     value: { document: JSON.stringify(initial) } };
-  let fail = false, gate;
+  let fail = false, refuse = false, gate;
   const listeners = new Set(), writes = [];
   const publish = () => { for (const listener of listeners) listener(); };
   return {
@@ -21,6 +21,7 @@ function scope(initial = defaults()) {
     getSnapshot: () => snapshot,
     subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); },
     fail(value) { fail = value; },
+    refuse(value) { refuse = value; },
     hold() { gate = Promise.withResolvers(); return gate; },
     replace(value, revision = snapshot.revision + 1, sourceId = snapshot.sourceId) {
       snapshot = { ...snapshot, revision, sourceId, value: { document: JSON.stringify(value) } };
@@ -31,8 +32,10 @@ function scope(initial = defaults()) {
       if (gate) { const pending = gate; gate = undefined; await pending.promise; }
       if (fail) throw new Error('保存失败。');
       assert.equal(revision, snapshot.revision);
+      if (refuse) return false;
       snapshot = { ...snapshot, revision: revision + 1, value: { document: ops[0].value } };
       publish();
+      return true;
     },
   };
 }
@@ -42,6 +45,21 @@ function controller(t, source) {
   t.after(() => value.dispose());
   return value;
 }
+
+test('a write the Host refuses keeps the draft and stops automatic retries', async t => {
+  const source = scope(), c = controller(t, source);
+  source.refuse(true);
+  c.edit(value => { value.name = 'B'; });
+  assert.equal(await c.save(), false);
+  assert.equal(c.getSnapshot().value.name, 'B');
+  assert.equal(c.getSnapshot().dirty, true);
+  assert.match(c.getSnapshot().error, /宿主拒绝了这次保存/);
+  t.mock.timers.tick(1_000);
+  assert.equal(source.writes.length, 1);
+  source.refuse(false);
+  assert.equal(await c.save(), true);
+  assert.equal(c.getSnapshot().saved, true);
+});
 
 test('reverting an idle draft follows subsequent saved changes without a conflict', t => {
   const source = scope(), c = controller(t, source);
@@ -117,7 +135,7 @@ function registration(t, kind) {
   const effects = [], events = new Set();
   const on = (name, fn) => { const entry = { name, fn }; events.add(entry); return () => events.delete(entry); };
   const ctx = {
-    settingsScope: { bind({ namespace }) { return namespace === AVATAR_NAMESPACE ? avatar : prompts; } },
+    configForms: { get(entryId) { return entryId === AVATAR_NAMESPACE ? avatar : prompts; } },
     remote: { $host: { home: 'host-a' }, $on: on,
       session: { modelCatalog: async () => ({ ok: true, value: { groups: [], failures: [] } }) } },
     on,

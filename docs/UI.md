@@ -12,7 +12,7 @@ Persona 的消息预览位于模型关联之后，直接显示，不提供折叠
 
 提示词已选目标始终显示两类目标的数量和名称，原生模型同时显示精确 provider/model。摘要可滚动，不可用目标保留 ID 与警告。新建规则展开目标选择；切换到已配置的规则时收起。用户的展开选择在同一条规则的输入、自动保存和排序过程中保持，仅由当前视图维护。上移、下移位于规则列表上方。
 
-保存状态显示在表单顶部。无效字段需要修正，保存失败时提供「重试自动保存」，冲突时提示重新载入。自动保存的时机、修订号检查与草稿恢复见[保存与生命周期](ARCHITECTURE.md#保存与生命周期)。DSH `0.1.6-alpha.2` 的官方 PluginConfigForm 使用显式保存，本组件使用 500ms 输入合并后自动保存。
+保存状态显示在表单顶部。无效字段需要修正，保存失败时提供「重试自动保存」，冲突时提示重新载入。自动保存的时机、修订号检查与草稿恢复见[保存与生命周期](ARCHITECTURE.md#保存与生命周期)。DSH `0.1.7-rc.2` 可以为 volatile 配置字段生成表单；本插件关闭生成表单，使用自己的配置页，并在 500ms 输入合并后自动保存。
 
 ## 消息预览
 
@@ -36,7 +36,7 @@ Persona 的消息预览位于模型关联之后，直接显示，不提供折叠
 
 ## 参考
 
-界面依据固定在 DSH `dsh-v0.1.6-alpha.2`：
+界面依据来自 DSH `dsh-v0.1.6-alpha.2`：
 
 | 来源 | 应用范围 |
 | --- | --- |
@@ -45,6 +45,8 @@ Persona 的消息预览位于模型关联之后，直接显示，不提供折叠
 | [Tooltip.module.css](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.6-alpha.2/packages/client/ui-primitives/src/Tooltip.module.css) | 150ms 淡入和减少动态效果处理；应用到编辑区、展开区域和弹窗属于本组件适配。 |
 | [PluginManagerPage.module.css](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.6-alpha.2/packages/client/ui-plugin-manager/src/client/PluginManagerPage.module.css) | 宿主页面对齐、悬停色，以及 guideChevron 的 160ms 展开指示。 |
 | [WAI-ARIA Dialog Modal Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/) | 弹窗焦点循环、初始焦点与关闭后的焦点归还。 |
+
+TODO：按 DSH `0.1.7-rc.2` 复核弹窗、提示和页面样式。`0.1.7` 的 Modal 改用 `--dsw-radius-panel` 圆角并加入淡入，PluginConfigForm 已移除。
 
 目标摘要的最大高度为 144px，提示词正文的最小高度为 280px，用于限制目标数量增加时的页面增长。本文的布局尺寸与动效参数由本组件维护，浏览器验证方法见下节。
 
