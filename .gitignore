@@ -19,3 +19,4 @@ preview/*-test.html
 preview/*-results.json
 .venv/
 .playwright-mcp/
+release/
