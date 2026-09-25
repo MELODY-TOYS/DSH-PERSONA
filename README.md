@@ -8,7 +8,7 @@
 
 一套 Persona 是一组共用名称与头像的模型，可以包含不同渠道的模型；每个模型最多属于一套 Persona。用户的名称与头像单独设置。初始 Persona 集合与提示词规则均为空，由使用者自行配置。
 
-当前为 Alpha 版本，适配 DSH `0.1.7-rc.2`，不支持 `0.1.6`。`0.1.7` 适配尚未在真实 DSH 中联调，已完成的检查和待验证场景见[宿主接入](docs/INTEGRATION.md#验证状态)。
+当前为 Alpha 版本，适配 DSH `0.1.7-rc.2`，不支持 `0.1.6`。已完成的联调和待验证场景见[宿主接入](docs/INTEGRATION.md#验证状态)，各版本变化见[更新日志](CHANGELOG.md)。
 
 https://github.com/user-attachments/assets/49004ddd-834e-4cf0-ad6d-6a07e77ddfc9
 

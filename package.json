@@ -21,6 +21,7 @@
     "assets/brand",
     "cordis.patch.yml",
     "README.md",
+    "CHANGELOG.md",
     "AGENTS.md",
     "docs/*.md",
     "LICENSE",
