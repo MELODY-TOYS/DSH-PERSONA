@@ -1,0 +1,74 @@
+name: Release
+
+# A pushed v* tag releases that commit. A manual run releases any commit, e.g. an older version.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Commit, branch or tag to release
+        required: true
+        default: main
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # Release notes always come from the default branch's changelog, which lists every version.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          path: current
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+          path: build
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.19.0'
+      - name: Test and pack
+        working-directory: build
+        run: |
+          npm ci
+          npm test
+          npm pack
+      - name: Write release notes
+        id: meta
+        run: |
+          node --input-type=module <<'EOF'
+          import { readFileSync, writeFileSync, appendFileSync } from 'node:fs';
+          const pkg = JSON.parse(readFileSync('build/package.json', 'utf8'));
+          const version = pkg.version;
+          const dsh = pkg.engines?.dsh ?? pkg.peerDependencies?.['@deepseek-ai/dsh'];
+          const changelog = readFileSync('current/CHANGELOG.md', 'utf8');
+          const start = changelog.indexOf(`\n## ${version}`);
+          if (start < 0) throw new Error(`CHANGELOG.md on the default branch has no section for ${version}`);
+          const next = changelog.indexOf('\n## ', start + 1);
+          const section = changelog.slice(start + 1, next < 0 ? undefined : next).split('\n').slice(1).join('\n').trim();
+          const base = `https://github.com/${process.env.GITHUB_REPOSITORY}/blob/${process.env.DEFAULT_BRANCH}/`;
+          const body = [
+            `下载 \`dsh-persona-${version}.tgz\`，在 DSH「插件 → 添加插件」中输入文件的绝对路径安装，然后重启 DSH。`,
+            `**适配 DSH \`${dsh}\`。** 其他 DSH 版本见 [README 的版本对应表](${base}README.md#安装)。`,
+            section.replace(/\]\((?!https?:|#)([^)]+)\)/g, `](${base}$1)`),
+          ].join('\n\n');
+          writeFileSync('notes.md', `${body}\n`);
+          appendFileSync(process.env.GITHUB_OUTPUT, `version=${version}\nprerelease=${version.includes('-')}\n`);
+          EOF
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+      - name: Publish
+        working-directory: build
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.meta.outputs.version }}
+          PRERELEASE: ${{ steps.meta.outputs.prerelease }}
+        run: |
+          flags=()
+          if [ "$PRERELEASE" = true ]; then flags+=(--prerelease --latest=false); fi
+          gh release create "v$VERSION" "dsh-persona-$VERSION.tgz" \
+            --target "$(git rev-parse HEAD)" --title "$VERSION" --notes-file ../notes.md "${flags[@]}"

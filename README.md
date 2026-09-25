@@ -14,7 +14,20 @@ https://github.com/user-attachments/assets/49004ddd-834e-4cf0-ad6d-6a07e77ddfc9
 
 ## 安装
 
-需要 Node.js `22.19.0` 或更高版本，以及 DSH `0.1.7-rc.2` 或后续的 `0.1.7` 正式版。`0.1.8` 及更高版本的 DSH 会按版本声明拒绝安装；`0.1.6` 不检查插件版本，但本插件在其中无法启动。版本声明见[宿主接入](docs/INTEGRATION.md#版本声明)。
+按 DSH 版本选择插件版本：
+
+| 插件版本 | 支持的 DSH |
+| --- | --- |
+| `0.1.0-rc.1` | `0.1.7-rc.2` 至 `0.1.7` 正式版 |
+| `0.1.0-alpha.3` | `0.1.6-alpha.2` |
+
+`0.1.8` 及更高版本的 DSH 会按版本声明拒绝安装当前插件。版本声明见[宿主接入](docs/INTEGRATION.md#版本声明)，各版本变化见[更新日志](CHANGELOG.md)。
+
+在 [Releases](https://github.com/MELODY-TOYS/DSH-PERSONA/releases) 下载对应版本的 `dsh-persona-<版本>.tgz`，保存到运行 DSH 的电脑上。在 DSH 侧边栏打开「插件」，点击「添加插件」，输入该文件的绝对路径并安装。安装完成后点击「立即启用」。
+
+### 从源码构建
+
+需要 Node.js `22.19.0` 或更高版本。
 
 ```sh
 git clone https://github.com/MELODY-TOYS/DSH-PERSONA.git
@@ -23,7 +36,7 @@ npm install
 npm pack
 ```
 
-`npm pack` 自动构建插件，生成 `dsh-persona-0.1.0-rc.1.tgz`。在 DSH 侧边栏打开「插件」，点击「添加插件」，输入该文件的绝对路径并安装。路径必须指向运行 DSH 的电脑上的文件。安装完成后点击「立即启用」。
+`npm pack` 自动构建插件，在当前目录生成 `dsh-persona-<版本>.tgz`，安装方法同上。
 
 进入「已安装 → dsh-persona → 包含的组件」，点击 `dsh-persona` 设置名称、头像和模型分组，或点击 `dsh-persona/prompts`（组件 ID `dsh-persona-prompts`）编辑提示词。
 
