@@ -23,7 +23,14 @@ https://github.com/user-attachments/assets/49004ddd-834e-4cf0-ad6d-6a07e77ddfc9
 
 `0.1.8` 及更高版本的 DSH 会按版本声明拒绝安装当前插件。版本声明见[宿主接入](docs/INTEGRATION.md#版本声明)，各版本变化见[更新日志](CHANGELOG.md)。
 
-在 [Releases](https://github.com/MELODY-TOYS/DSH-PERSONA/releases) 下载对应版本的 `dsh-persona-<版本>.tgz`，保存到运行 DSH 的电脑上。在 DSH 侧边栏打开「插件」，点击「添加插件」，输入该文件的绝对路径并安装。安装完成后点击「立即启用」。
+在 DSH 侧边栏打开「插件」，点击「添加插件」，粘贴对应版本的安装包链接并安装，安装完成后点击「立即启用」：
+
+- `0.1.0-rc.1`：`https://github.com/MELODY-TOYS/DSH-PERSONA/releases/download/v0.1.0-rc.1/dsh-persona-0.1.0-rc.1.tgz`
+- `0.1.0-alpha.3`：`https://github.com/MELODY-TOYS/DSH-PERSONA/releases/download/v0.1.0-alpha.3/dsh-persona-0.1.0-alpha.3.tgz`
+
+安装包也可以从 [Releases](https://github.com/MELODY-TOYS/DSH-PERSONA/releases) 下载，保存到运行 DSH 的电脑上，再在「添加插件」中输入文件的绝对路径。安装包是 npm 使用的 `.tgz` 压缩包，内容为已构建的 JavaScript，Windows、macOS 和 Linux 通用。
+
+也可以在命令行安装：先运行 `dsh --version` 查看 DSH 版本，按上表选择链接，再运行 `dsh plugin add --profile <profile> <链接>`，然后重启 DSH。`<profile>` 是 DSH home（默认 `~/.dsh`）下 `profiles` 目录中的名称，例如 Web 界面使用的 `web`。请 AI Agent 代为安装时，把本仓库地址交给它，并说明使用的 DSH profile；它可以按本节选择版本并用这条命令安装，不需要克隆和构建。
 
 ### 从源码构建
 
@@ -36,7 +43,7 @@ npm install
 npm pack
 ```
 
-`npm pack` 自动构建插件，在当前目录生成 `dsh-persona-<版本>.tgz`，安装方法同上。
+`npm pack` 自动构建插件，在当前目录生成 `dsh-persona-<版本>.tgz`，按上文的本地文件方式安装。
 
 进入「已安装 → dsh-persona → 包含的组件」，点击 `dsh-persona` 设置名称、头像和模型分组，或点击 `dsh-persona/prompts`（组件 ID `dsh-persona-prompts`）编辑提示词。
 
