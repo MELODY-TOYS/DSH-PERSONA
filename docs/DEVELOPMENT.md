@@ -65,7 +65,7 @@ DSH 调整聊天页面结构后，替身页面无法发现问题。升级 DSH �
 2. 把[更新日志](../CHANGELOG.md)的「未发布」换成版本号与日期，并更新 README 的版本对应表和安装链接。合并到 `main`。
 3. 推送标签 `v<版本>`，或在 Actions 中手动运行 Release 工作流并填写要发布的提交。
 
-[Release 工作流](../.github/workflows/release.yml) 在该提交上运行 `npm test` 和 `npm pack`，以 `v<版本>` 为标签新建 GitHub Release 并附上打包文件。说明取自 `main` 上更新日志的对应一节，开头写明适配的 DSH 版本。带 `-alpha`、`-rc` 等后缀的版本标记为预发布。标签已有 Release 时工作流失败，不会覆盖。
+[Release 工作流](../.github/workflows/release.yml) 在该提交上运行 `npm test` 和 `npm pack`，以 `v<版本>` 为标签新建 GitHub Release 并附上打包文件。标题写成「版本 · DSH 版本线」，例如 `0.1.0-rc.1 · DSH 0.1.7`。说明取自 `main` 上更新日志的对应一节，开头写明适配的 DSH 版本。带 `-alpha`、`-rc` 等后缀的版本标记为预发布。标签已有 Release 时，工作流只更新标题和说明，不替换已上传的打包文件。
 
 ## 贡献
 
