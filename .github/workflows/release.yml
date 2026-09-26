@@ -1,6 +1,7 @@
 name: Release
 
 # A pushed v* tag releases that commit. A manual run releases any commit, e.g. an older version.
+# Re-running for an existing release refreshes its title and notes and keeps the uploaded package.
 on:
   push:
     tags: ['v*']
@@ -52,12 +53,15 @@ jobs:
           const section = changelog.slice(start + 1, next < 0 ? undefined : next).split('\n').slice(1).join('\n').trim();
           const base = `https://github.com/${process.env.GITHUB_REPOSITORY}/blob/${process.env.DEFAULT_BRANCH}/`;
           const body = [
-            `下载 \`dsh-persona-${version}.tgz\`，在 DSH「插件 → 添加插件」中输入文件的绝对路径安装，然后重启 DSH。`,
+            `在 DSH「插件 → 添加插件」中粘贴安装包链接 \`https://github.com/${process.env.GITHUB_REPOSITORY}/releases/download/v${version}/dsh-persona-${version}.tgz\`，或下载下方的 \`dsh-persona-${version}.tgz\` 后输入文件的绝对路径。安装后重启 DSH。`,
             `**适配 DSH \`${dsh}\`。** 其他 DSH 版本见 [README 的版本对应表](${base}README.md#安装)。`,
             section.replace(/\]\((?!https?:|#)([^)]+)\)/g, `](${base}$1)`),
           ].join('\n\n');
           writeFileSync('notes.md', `${body}\n`);
-          appendFileSync(process.env.GITHUB_OUTPUT, `version=${version}\nprerelease=${version.includes('-')}\n`);
+          // The title names the DSH release line, e.g. ">=0.1.7-rc.2 <0.1.8-0" -> "DSH 0.1.7".
+          const line = /\d+\.\d+\.\d+/.exec(dsh ?? '')?.[0];
+          const title = line ? `${version} · DSH ${line}` : version;
+          appendFileSync(process.env.GITHUB_OUTPUT, `version=${version}\ntitle=${title}\nprerelease=${version.includes('-')}\n`);
           EOF
         env:
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
@@ -66,9 +70,14 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.meta.outputs.version }}
+          TITLE: ${{ steps.meta.outputs.title }}
           PRERELEASE: ${{ steps.meta.outputs.prerelease }}
         run: |
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            gh release edit "v$VERSION" --title "$TITLE" --notes-file ../notes.md
+            exit 0
+          fi
           flags=()
           if [ "$PRERELEASE" = true ]; then flags+=(--prerelease --latest=false); fi
           gh release create "v$VERSION" "dsh-persona-$VERSION.tgz" \
-            --target "$(git rev-parse HEAD)" --title "$VERSION" --notes-file ../notes.md "${flags[@]}"
+            --target "$(git rev-parse HEAD)" --title "$TITLE" --notes-file ../notes.md "${flags[@]}"
