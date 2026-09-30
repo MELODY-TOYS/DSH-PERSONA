@@ -22,7 +22,7 @@ Persona 组通过稳定 ID 引用，使用该组当前已保存的模型成员�
 
 ## 系统提示词注入
 
-适配目标为 DSH `0.1.7-rc.2`。`system-prompt/assemble` 在每个模型步骤重新组装提示词。官方 `installModelSelection` 在这个 waterfall 中捕获该步骤的模型，并把相同选择用于后续请求。
+适配目标为 DSH `0.2.0-rc.2`。`system-prompt/assemble` 在每个模型步骤重新组装提示词。官方 `installModelSelection` 在这个 waterfall 中捕获该步骤的模型，并把相同选择用于后续请求。
 
 每次组装使用开始时已保存的规则与分组快照，避免异步组装期间的编辑改变本次匹配。组件从下游组装结果的 `variables.provider`、`variables.model` 读取本次路由，将匹配正文追加为 `interpolate: false` 的系统提示词段。工具、运行时上下文和请求路由由宿主处理。实现见 [runtime.mjs](../src/modules/prompts/runtime.mjs)。
 
@@ -52,6 +52,6 @@ python scripts/prompts-smoke.py
 
 ## 接口依据
 
-- [系统提示词契约](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.7-rc.2/packages/core/system-prompt/src/index.ts)
-- [模型选择与请求绑定](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.7-rc.2/packages/core/agent/src/model-selection.ts)
-- [插件配置与组件页面](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.7-rc.2/packages/client/ui-plugin-manager/README.md)
+- [系统提示词契约](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/packages/core/system-prompt/src/index.ts)
+- [模型选择与请求绑定](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/packages/core/agent/src/model-selection.ts)
+- [插件配置与组件页面](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/packages/client/ui-plugin-manager/README.md)

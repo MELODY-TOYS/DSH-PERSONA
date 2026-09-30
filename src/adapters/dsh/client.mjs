@@ -9,7 +9,7 @@ import { mountPromptSettings } from '../../modules/prompts/settings-view.mjs';
 import { registerPromptSettings } from './register-prompts.mjs';
 export const inject = ['slots', 'locale', 'configForms', 'remote', 'remote.session', 'sessions', 'uiConversation'];
 
-/** DSH 0.1.7's locale service reads its listeners through `this`; never pass its methods unbound. */
+/** DSH's locale service reads its listeners through `this`; never pass its methods unbound. */
 function useLocaleRevision(localeService) {
   const subscribe = useCallback(listener => localeService.subscribe(listener), [localeService]);
   return useSyncExternalStore(subscribe, () => localeService.getSnapshot().revision);

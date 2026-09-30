@@ -36,7 +36,7 @@ function source(initial) {
     set(next) { value = next; for (const fn of [...listeners]) fn(); } };
 }
 // ChatSnapshot.order and the outer source can stay unchanged on a node-only update.
-// See dsh-v0.1.7-rc.2 ui-chat/conversation-nodes/chat-snapshot-builder.ts.
+// See dsh-v0.2.0-rc.2 ui-chat/conversation-nodes/chat-snapshot-builder.ts.
 function nodeStore() {
   const sources = new Map();
   const getSource = key => {
@@ -181,6 +181,28 @@ def run():
             settle()
             assert lead() == 'tp1' and name() == 'Agent B', (lead(), name())
             check('Hidden process rows hand the avatar to the response and take it back when shown')
+
+            # A running Turn keeps an empty slot in its status row and renders the clock after the transcript.
+            page.evaluate('''() => {
+                fixture.root.querySelector('[data-chat-flow-key=tp1]').innerHTML = '<div data-slot="conversation.chat.node"></div>';
+                fixture.root.querySelector('[data-chat-flow]').insertAdjacentHTML('beforeend', '<div data-chat-running><span>深度求索中</span></div>');
+            }''')
+            settle()
+            running = page.locator('[data-chat-running]')
+            assert lead() == 'tp1', lead()
+            assert running.get_attribute('data-dsp-chat-role') == 'assistant' and running.get_attribute('data-dsp-chat-lead') is None
+            assert running.evaluate('(row) => getComputedStyle(row).paddingLeft') == '52px'
+            page.evaluate('''() => fixture.root.querySelector('[data-chat-running]').insertAdjacentHTML('beforebegin',
+                '<div data-chat-flow-key="u9" data-chat-node-key="u9" data-chat-flow-kind="user" data-chat-turn="9">追问</div>')''')
+            settle()
+            assert running.get_attribute('data-dsp-chat-role') is None
+            page.evaluate('''() => {
+                for (const selector of ['[data-chat-flow-key=u9]', '[data-chat-running]']) fixture.root.querySelector(selector).remove();
+                fixture.root.querySelector('[data-chat-flow-key=tp1]').innerHTML = '<button>深度求索中</button>';
+            }''')
+            settle()
+            assert lead() == 'tp1' and name() == 'Agent B', (lead(), name())
+            check('The running clock aligns with the latest reply and never takes an earlier Turn identity')
 
             before = page.evaluate('fixture.scans')
             page.evaluate('''() => {

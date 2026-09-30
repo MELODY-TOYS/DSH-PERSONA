@@ -1,11 +1,11 @@
-"""Pinned 0.1.7-rc.2 icon-seat smoke test. This does not run a DSH host."""
+"""Pinned 0.2.0-rc.2 icon-seat smoke test. This does not run a DSH host."""
 from pathlib import Path
 import json
 import shutil
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-report = {'environment': 'Chromium about:blank; standalone preview and 0.1.7-rc.2 icon-seat DOM fixtures; no DSH host', 'checks': []}
+report = {'environment': 'Chromium about:blank; standalone preview and 0.2.0-rc.2 icon-seat DOM fixtures; no DSH host', 'checks': []}
 
 def check(name):
     report['checks'].append({'name': name, 'passed': True})
@@ -40,7 +40,7 @@ with sync_playwright() as p:
     assert page.locator('.dso-layer[aria-hidden="true"]').count() == 1
     check('Detail background is fixed by the design and exposes no user controls')
 
-    # DSH 0.1.7 wraps the crumb and icon row in one data-window-drag strip.
+    # DSH wraps the crumb and icon row in one data-window-drag strip.
     assert page.locator('#back-to-plugins').get_attribute('data-dso-part') == 'crumb'
     assert page.locator('[data-dso-part=head] > [data-dso-part=icon]').count() == 1
     check('Detail decoration finds the crumb and icon inside the window-drag strip')

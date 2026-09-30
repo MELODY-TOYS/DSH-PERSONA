@@ -1,26 +1,26 @@
 # 宿主接入
 
-适配目标为 DSH `0.1.7-rc.2`。配置入口、设置保存、模型目录和聊天消息显示已有适配代码。已记录的联调范围及待验证场景见[验证状态](#验证状态)。
+适配目标为 DSH `0.2.0-rc.2`。配置入口、设置保存、模型目录和聊天消息显示已有适配代码。已记录的联调范围及待验证场景见[验证状态](#验证状态)。
 
 ## 版本声明
 
-`package.json` 的 `engines.dsh` 和可选 peer `@deepseek-ai/dsh` 使用同一范围 `>=0.1.7-rc.2 <0.1.8-0`，覆盖 `0.1.7-rc.2` 和后续的 `0.1.7` 正式版。DSH `0.1.7` 在安装和启动时检查名为 `@deepseek-ai/dsh` 或 `@deepseek-ai/dsh-*` 的 peer，不满足范围的插件会被拒绝，需要用户在插件管理页授予精确版本豁免。Profile 使用 `autoInstallPeers: false`，这个 peer 不会被安装；本地 `npm install` 也不会安装可选 peer。
+`package.json` 的 `engines.dsh` 和可选 peer `@deepseek-ai/dsh` 使用同一范围 `>=0.2.0-rc.2 <0.2.1-0`，覆盖 `0.2.0-rc.2` 和后续的 `0.2.0` 正式版。DSH 在安装和启动时检查名为 `@deepseek-ai/dsh` 或 `@deepseek-ai/dsh-*` 的 peer，预发布版本同样按范围判断，不满足范围的插件会被拒绝，需要用户在插件管理页授予精确版本豁免。Profile 使用 `autoInstallPeers: false`，这个 peer 不会被安装；本地 `npm install` 也不会安装可选 peer。
 
-插件不支持 DSH `0.1.6`：`0.1.7` 移除了本插件原先使用的设置接口，两套接口不能共存。`0.1.6` 不做 peer 检查，安装后组件会启动失败。
+插件不支持 DSH `0.1.6`：`0.1.7` 移除了本插件原先使用的设置接口，两套接口不能共存。`0.1.6` 不做 peer 检查，安装后组件会启动失败。DSH `0.1.7-rc.2` 使用插件 `0.1.0-rc.1`。范围不包括 `0.2.0-rc.1`：它仍在本轮状态行显示运行耗时，页面结构与 `0.2.0-rc.2` 不同，本版本未在其中验证。
 
 ## 插件配置页
 
 包通过 `dsh.bundle.patch` 声明 [cordis.patch.yml](../cordis.patch.yml)。Bundle 详情页只使用 DSH 原生的「包含的组件」列表，不注册 `plugins.bundle.config`。Persona 配置注册到 `plugins.row.config`，key 为 `dsh-persona#dsh-persona`；提示词配置使用 `dsh-persona#dsh-persona-prompts`。DSH 负责组件标题、状态、启停和返回导航，组件只提供简介与表单。
 
-DSH `0.1.7` 优先显示包元数据中的描述，没有描述时才渲染插件的简介。`dsh-persona` 组件行显示 `package.json` 的描述；`dsh-persona/prompts` 没有导出元数据，组件行以模块名为标题，并显示插件提供的简介。
+组件行和配置页顶部优先显示包元数据中的描述。`dsh-persona` 两处都显示 `package.json` 的描述；`dsh-persona/prompts` 没有导出元数据，组件行以模块名为标题并列出条目 ID，配置页顶部显示插件提供的简介。
 
 注册代码见 [register-settings.mjs](../src/adapters/dsh/register-settings.mjs) 和 [register-prompts.mjs](../src/adapters/dsh/register-prompts.mjs)。详情页不插入 banner 或全图入口；背景由插件管理页详情节点的生命周期独立挂载，不依赖某个表单是否存在。详情页顶部的返回按钮与图标行位于 `data-window-drag` 容器内，背景装饰按这个结构定位。
 
-配置表单使用 DSH 的 `locale` 服务选择中英文文案，字典集中在 [locales.mjs](../src/locales.mjs)。切换语言时重新显示控制器中的草稿；`0.1.7` 的 `locale.subscribe` 依赖 `this`，配置页通过闭包调用它，不能直接把方法传给 `useSyncExternalStore`。独立预览默认使用中文。消息预览控件和内置示例保持中文，用户名称、模型信息与提示词正文保持原文。校验器和宿主返回的错误保留来源文字。
+配置表单使用 DSH 的 `locale` 服务选择中英文文案，字典集中在 [locales.mjs](../src/locales.mjs)。切换语言时重新显示控制器中的草稿；DSH 的 `locale.subscribe` 依赖 `this`，配置页通过闭包调用它，不能直接把方法传给 `useSyncExternalStore`。独立预览默认使用中文。消息预览控件和内置示例保持中文，用户名称、模型信息与提示词正文保持原文。校验器和宿主返回的错误保留来源文字。
 
 ## 设置和模型目录
 
-DSH `0.1.7` 把插件设置保存为 profile 条目的配置。两个 Host 组件各自声明一个 volatile 字段 `document`：Persona 组件的条目 ID 为 `dsh-persona`，提示词组件为 `dsh-persona-prompts`。值写入当前 profile 的 `cordis.patch.yml`，修改后由 Loader 直接更新运行中的值，不重启组件。实现见 [host.mjs](../src/adapters/dsh/host.mjs)、[prompts/host.mjs](../src/modules/prompts/host.mjs) 和 [live-document.mjs](../src/adapters/dsh/live-document.mjs)。
+DSH 从 `0.1.7` 起把插件设置保存为 profile 条目的配置。两个 Host 组件各自声明一个 volatile 字段 `document`：Persona 组件的条目 ID 为 `dsh-persona`，提示词组件为 `dsh-persona-prompts`。值写入当前 profile 的 `cordis.patch.yml`，修改后由 Loader 直接更新运行中的值，不重启组件。实现见 [host.mjs](../src/adapters/dsh/host.mjs)、[prompts/host.mjs](../src/modules/prompts/host.mjs) 和 [live-document.mjs](../src/adapters/dsh/live-document.mjs)。
 
 组件通过 `internal/config` 校验每次写入。无法解析的文档会被拒绝，运行中的配置保持不变。组件调用 `settings.configure({ auto: false })`，DSH 不会为 `document` 生成原始 JSON 表单。配置更新后组件发出 `system-prompt/change`。
 
@@ -44,7 +44,7 @@ DSH `0.1.6` 把设置保存在 DSH home 的 `settings.yaml`。`0.1.7` 首次启�
 
 用户消息、steering、待发送本地回显和待接收 steering 使用用户显示信息。assistant 消息按精确 `(provider, model)` 查找 Persona：优先读取消息携带的 `finalNode.requestConfig`；缺少时使用 `dsh-persona-models` Conversation target，按消息锚点查找其前面的 `request/header` 路由。没有路由证据或没有关联 Persona 的 assistant 行保持宿主原样。
 
-头像按"一轮回答"显示。DSH `0.1.7` 把一轮回答拆成几行：`turn-process` 状态行（显示"深度求索中"和耗时）、过程分组（思考与工具调用，完成后折叠）、回复部分和 `turn-tail`。同一 `data-chat-turn` 内连续的 assistant 侧行组成一轮；用户消息、steering 和 `turn-trigger` 分隔各轮。每轮只在第一个可见行绘制头像和名称，其余行只增加相同的左侧缩进。状态行尚未渲染、为空或被隐藏时，头像落在下一可见行，状态行出现后移回。过程分组内嵌套 `[data-chat-flow]` 中的思考部分保持原样。
+头像按"一轮回答"显示。DSH 把一轮回答拆成几行：`turn-process` 状态行、过程分组（思考与工具调用，完成后折叠）、回复部分和 `turn-tail`。回复进行中，状态行保留一个内容为空的插槽，"深度求索中"和耗时显示在对话末尾的 `data-chat-running` 行；回复结束后，状态行显示"已完成"和用时。同一 `data-chat-turn` 内连续的 assistant 侧行组成一轮；用户消息、steering 和 `turn-trigger` 分隔各轮。每轮只在第一个可见行绘制头像和名称，其余行只增加相同的左侧缩进。进行中的状态行仍有插槽子节点，不算空行，所以头像从这一轮开始就位于顶部，回复结束后位置不变。状态行被隐藏或没有子节点时，头像落在下一可见行，状态行恢复后移回。对话末尾的运行状态属于最新一轮：这一轮已有 assistant 行时，它使用相同的左侧缩进，不绘制头像。过程分组内嵌套 `[data-chat-flow]` 中的思考部分保持原样。
 
 未识别的消息行类型只要带有 `data-chat-turn`，就按 assistant 侧处理。DSH 增加新的包裹行时，头像仍留在这一轮的第一行，不会因为类型名未登记而消失。
 
@@ -54,28 +54,30 @@ DSH `0.1.6` 把设置保存在 DSH home 的 `settings.yaml`。`0.1.7` 首次启�
 
 装饰器只增加头像与名称所需的 `data-dsp-*` 属性、局部 CSS 和可访问名称，不移动消息子节点。Markdown、附件、思考折叠、工具卡片、消息操作、流式内容和中断状态继续由 DSH 原生 renderer 管理。卸载插件或离开 Session 时会恢复这些行并清理观察器、消息订阅、样式和图片预加载器。
 
-这套实现依赖 `0.1.7-rc.2` 的语义属性：`data-conversation-scroll`、顶层 `data-chat-flow`、`data-chat-turn`、`data-chat-flow-kind` 中的 `user`、`steering`、`turn-trigger` 和 `assistant-step`、`data-chat-node-key`、`data-chat-group-key`、`data-submission-echo` 和 `data-pending-steering`，以及 `hidden` 与 `data-turn-process-hidden` 两个显示标记。升级 DSH 后运行[真实宿主聊天检查](DEVELOPMENT.md#真实宿主聊天检查)；它在属性或分组方式变化导致头像缺失时失败，并输出每个阶段的行结构。
+这套实现依赖 `0.2.0-rc.2` 的语义属性：`data-conversation-scroll`、顶层 `data-chat-flow`、`data-chat-turn`、`data-chat-flow-kind` 中的 `user`、`steering`、`turn-trigger` 和 `assistant-step`、`data-chat-node-key`、`data-chat-group-key`、`data-submission-echo` 和 `data-pending-steering`，对话末尾的 `data-chat-running`，以及 `hidden` 与 `data-turn-process-hidden` 两个显示标记。升级 DSH 后运行[真实宿主聊天检查](DEVELOPMENT.md#真实宿主聊天检查)；它在属性或分组方式变化导致头像缺失时失败，并输出每个阶段的行结构。
 
 ## 构建
 
 `lib/client.js` 使用 `window.__ModuleLoader__.load({ id, factory })` 注册模块。React 从宿主模块表获取，本包代码、样式和品牌资源由构建脚本内联。客户端与独立预览附带代码、素材及第三方许可声明；内嵌鲸鱼娘素材继续适用 [CC BY-NC-SA 4.0](../assets/brand/LICENSE)。宿主入口位于 `lib/index.js`，运行时依赖 `@deepseek-ai/schemastery`（`.volatile()` 需要 `3.18.4`）和读取旧版 `settings.yaml` 的 `yaml`。
 
-浏览器入口注入 `configForms`、`locale`、`slots`、`remote`、`sessions` 和 `uiConversation`。DSH `0.1.7` 的 Web 客户端在任一插件等待缺失服务时拒绝启动，升级时需要确认这些服务仍由 `dsh.client.inject` 列出的包提供。
+浏览器入口注入 `configForms`、`locale`、`slots`、`remote`、`sessions` 和 `uiConversation`。DSH 的 Web 客户端在任一插件等待缺失服务时拒绝启动，升级时需要确认这些服务仍由 `dsh.client.inject` 列出的包提供。
 
 构建过程使用 TypeScript 转译，没有完成 DSH SDK 类型检查。构建及本地验证方法见[开发指南](DEVELOPMENT.md)。
 
 ## 验证状态
 
-`0.1.7-rc.2` 已在本机安装的 DSH Web profile 中联调：通过 `dsh plugin add` 安装打包文件，两个组件配置页正常显示；修改用户名称后自动保存成功，刷新页面后保留，值写入 profile 的 `cordis.patch.yml`，浏览器控制台没有错误。聊天头像使用[模拟 DeepSeek 接口](../scripts/mock-deepseek.mjs)返回流式思考与回复，检查了新会话首轮、同一会话的后续轮次和刷新后的历史记录：头像在状态行出现后（首轮）或第一个思考片段出现后（模型不变的后续轮次）显示，思考、折叠和回复过程中保持在状态行，每轮只有一个 AI 头像。未验证工具调用、steering、真实 DeepSeek 接口和图片头像。Node 测试在真实 Cordis 容器中运行两个 Host 组件，覆盖 volatile 配置、写入校验、生成表单开关和旧版设置迁移。另一个本地检查使用 npm 发布的 `@deepseek-ai/dsh-settings@0.1.7-rc.2`，配合模拟 Loader 提交步骤的配置编辑器替身，确认了表单投影、修订号冲突、无效文档拒绝和 `settings.yaml` 迁移。浏览器场景使用按 `0.1.7-rc.2` 真实页面结构构造的消息行和详情页结构。
+`0.2.0-rc.2` 在独立的 DSH home 中联调：通过 `dsh plugin add` 安装打包文件，插件列表与详情页图标、详情页背景和两个组件配置页正常显示。home 中放入一份由 DSH `0.1.6` 设置改名得到的 `settings.yaml.imported`，首次启动后名称、头像、含 3 个模型的 Persona 组和提示词写入 profile 的 `cordis.patch.yml`。修改用户名称后自动保存成功，刷新页面后保留。一条以 Persona 组为目标的提示词保存后，新会话的系统提示词末尾出现该正文，保存前的会话没有。聊天头像使用[模拟 DeepSeek 接口](../scripts/mock-deepseek.mjs)检查了新会话首轮、排队消息形成的后续轮次、Ctrl+Enter 插话、切换到旧会话再返回，以及浅色和深色主题：每段回复只有一个 AI 头像，从这一轮开始就位于顶部，末尾的运行状态与回复内容对齐；[真实宿主聊天检查](../scripts/dsh-live-chat.py)通过，浏览器控制台没有错误。未验证工具调用、真实 DeepSeek 接口、插件启停、断线重连和窄屏。
+
+以下联调记录来自 DSH `0.1.7-rc.2`：通过 `dsh plugin add` 安装打包文件，两个组件配置页正常显示；修改用户名称后自动保存成功，刷新页面后保留，值写入 profile 的 `cordis.patch.yml`，浏览器控制台没有错误。聊天头像使用[模拟 DeepSeek 接口](../scripts/mock-deepseek.mjs)返回流式思考与回复，检查了新会话首轮、同一会话的后续轮次和刷新后的历史记录：头像在状态行出现后（首轮）或第一个思考片段出现后（模型不变的后续轮次）显示，思考、折叠和回复过程中保持在状态行，每轮只有一个 AI 头像。未验证工具调用、steering、真实 DeepSeek 接口和图片头像。Node 测试在真实 Cordis 容器中运行两个 Host 组件，覆盖 volatile 配置、写入校验、生成表单开关和旧版设置迁移。另一个本地检查使用 npm 发布的 `@deepseek-ai/dsh-settings@0.1.7-rc.2`，配合模拟 Loader 提交步骤的配置编辑器替身，确认了表单投影、修订号冲突、无效文档拒绝和 `settings.yaml` 迁移。浏览器场景使用按 `0.1.7-rc.2` 真实页面结构构造的消息行和详情页结构；聊天头像检查另加入了 `0.2.0-rc.2` 的空状态插槽和末尾运行状态。
 
 以下联调记录来自 DSH `0.1.6-alpha.2`：桌面与 390px 窄屏、详情页往返、模型搜索、删除弹窗的取消焦点与 Escape、浅深主题、减少动态效果、包详情与组件页之间背景视频实例不变、Persona 与提示词持久化保存，以及最小真实请求中的字面提示词注入。配置页消息预览另检查了发送途中暂停、进度拖动、分块回复、思考区收起和减少动态效果。布局和播放机制见[界面文档](UI.md)。
 
 本地 Node 测试与独立浏览器场景使用设置或宿主接口替身。[聊天头像检查](../scripts/chat-smoke.py) 在真实 Chromium 中验证消息数据更新与装饰器，但页面结构和消息来源仍是测试替身；[真实宿主聊天检查](../scripts/dsh-live-chat.py) 需要本机运行的 DSH，不在 CI 中运行。这些检查不能证明网络重连和跨会话显示。
 
-TODO：在 DSH `0.1.7-rc.2` 中验证打包文件的全新安装、从 `0.1.6` 升级后的设置迁移、配置写入 profile 后的刷新保留、插件启停、断线重连后的草稿恢复、工具调用与 steering 轮次中的头像，以及多会话切换。重连后的修订冲突应保留输入并阻止覆盖。DSH `0.1.7` 正式版发布后复核本文依赖的接口。
+TODO：在 DSH `0.2.0-rc.2` 中验证插件启停、断线重连后的草稿恢复、工具调用轮次中的头像和窄屏布局。重连后的修订冲突应保留输入并阻止覆盖。DSH `0.2.0` 正式版发布后复核本文依赖的接口。
 
 ## 上游参考
 
-[插件管理页](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.7-rc.2/packages/client/ui-plugin-manager/README.md) 说明安装与配置入口，[插件兼容性检查](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.7-rc.2/packages/boot/app-boot/src/plugin-compatibility.ts) 定义 peer 范围判断。[设置服务](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.7-rc.2/packages/settings/settings/src/index.ts) 定义 volatile 表单、修订号和 `settings.yaml` 导入，[浏览器配置表单](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.7-rc.2/packages/client/ui-settings/src/client/config-form.ts) 定义 `configForms`。
+[插件管理页](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/packages/client/ui-plugin-manager/README.md) 说明安装与配置入口，[插件兼容性检查](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/packages/boot/app-boot/src/plugin-compatibility.ts) 定义 peer 范围判断。[设置服务](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/packages/settings/settings/src/index.ts) 定义 volatile 表单、修订号和 `settings.yaml` 导入，[浏览器配置表单](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/packages/client/ui-settings/src/client/config-form.ts) 定义 `configForms`。
 
-[ChatNodeSeat](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.7-rc.2/packages/client/ui-chat/src/client/chat/ChatNodeSeat.tsx) 提供消息行语义属性，[ChatGroupSeat](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.7-rc.2/packages/client/ui-chat/src/client/chat/ChatGroupSeat.tsx) 和 [process-groups](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.7-rc.2/packages/client/ui-chat/src/client/conversation-nodes/process-groups.ts) 定义过程分组，[MessageItem](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.7-rc.2/packages/client/ui-chat/src/client/chat/MessageItem.tsx) 提供待发送与 steering 标记，[Conversation slot](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.7-rc.2/packages/client/ui-conversation/src/client/contract/slots.ts) 定义会话级 dock。
+[ChatNodeSeat](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/packages/client/ui-chat/src/client/chat/ChatNodeSeat.tsx) 提供消息行语义属性，[ChatGroupSeat](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/packages/client/ui-chat/src/client/chat/ChatGroupSeat.tsx) 和 [process-groups](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/packages/client/ui-chat/src/client/conversation-nodes/process-groups.ts) 定义过程分组，[MessageItem](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/packages/client/ui-chat/src/client/chat/MessageItem.tsx) 提供待发送与 steering 标记，[Conversation slot](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/packages/client/ui-conversation/src/client/contract/slots.ts) 定义会话级 dock，[ChatView](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/packages/client/ui-chat/src/client/chat/ChatView.tsx) 在对话末尾渲染运行状态。
