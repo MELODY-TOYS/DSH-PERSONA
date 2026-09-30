@@ -1,6 +1,6 @@
 /** User settings and the Persona library share one revision-checked document. */
 import { parseState, parseIdentity } from '../../core/persona.mjs';
-/** DSH 0.1.7 keys live settings by profile entry id. */
+/** DSH keys live settings by profile entry id. */
 export const AVATAR_NAMESPACE = 'dsh-persona';
 /** DSH 0.1.6 settings.yaml section, read once by the legacy import. */
 export const AVATAR_LEGACY_SECTION = 'dsh-persona-avatar';

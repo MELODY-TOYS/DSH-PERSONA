@@ -46,7 +46,7 @@ Persona 的消息预览位于模型关联之后，直接显示，不提供折叠
 | [PluginManagerPage.module.css](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.6-alpha.2/packages/client/ui-plugin-manager/src/client/PluginManagerPage.module.css) | 宿主页面对齐、悬停色，以及 guideChevron 的 160ms 展开指示。 |
 | [WAI-ARIA Dialog Modal Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/) | 弹窗焦点循环、初始焦点与关闭后的焦点归还。 |
 
-TODO：按 DSH `0.1.7-rc.2` 复核弹窗、提示和页面样式。`0.1.7` 的 Modal 改用 `--dsw-radius-panel` 圆角并加入淡入，PluginConfigForm 已移除。
+TODO：按 DSH `0.2.0-rc.2` 复核弹窗、提示和页面样式。DSH 从 `0.1.7` 起 Modal 改用 `--dsw-radius-panel` 圆角并加入淡入，PluginConfigForm 已移除。
 
 目标摘要的最大高度为 144px，提示词正文的最小高度为 280px，用于限制目标数量增加时的页面增长。本文的布局尺寸与动效参数由本组件维护，浏览器验证方法见下节。
 

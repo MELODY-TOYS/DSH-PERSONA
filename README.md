@@ -8,7 +8,7 @@
 
 一套 Persona 是一组共用名称与头像的模型，可以包含不同渠道的模型；每个模型最多属于一套 Persona。用户的名称与头像单独设置。初始 Persona 集合与提示词规则均为空，由使用者自行配置。
 
-当前为候选版本（rc），适配 DSH `0.1.7-rc.2`，不支持 `0.1.6`。已完成的联调和待验证场景见[宿主接入](docs/INTEGRATION.md#验证状态)，各版本变化见[更新日志](CHANGELOG.md)。
+当前为候选版本（rc），适配 DSH `0.2.0-rc.2`，不支持 `0.1.x` 和 `0.2.0-rc.1`。已完成的联调和待验证场景见[宿主接入](docs/INTEGRATION.md#验证状态)，各版本变化见[更新日志](CHANGELOG.md)。
 
 https://github.com/user-attachments/assets/49004ddd-834e-4cf0-ad6d-6a07e77ddfc9
 
@@ -18,13 +18,15 @@ https://github.com/user-attachments/assets/49004ddd-834e-4cf0-ad6d-6a07e77ddfc9
 
 | 插件版本 | 支持的 DSH |
 | --- | --- |
-| `0.1.0-rc.1` | `0.1.7-rc.2` 至 `0.1.7` 正式版 |
+| `0.2.0-rc.1` | `0.2.0-rc.2` 至 `0.2.0` 正式版 |
+| `0.1.0-rc.1` | `0.1.7-rc.2` |
 | `0.1.0-alpha.3` | `0.1.6-alpha.2` |
 
-`0.1.8` 及更高版本的 DSH 会按版本声明拒绝安装当前插件。版本声明见[宿主接入](docs/INTEGRATION.md#版本声明)，各版本变化见[更新日志](CHANGELOG.md)。
+DSH `0.2.0-rc.1` 以及 `0.2.1` 和更高版本会按版本声明拒绝安装当前插件。版本声明见[宿主接入](docs/INTEGRATION.md#版本声明)，各版本变化见[更新日志](CHANGELOG.md)。
 
 在 DSH 侧边栏打开「插件」，点击「添加插件」，粘贴对应版本的安装包链接并安装，安装完成后点击「立即启用」：
 
+- `0.2.0-rc.1`：`https://github.com/MELODY-TOYS/DSH-PERSONA/releases/download/v0.2.0-rc.1/dsh-persona-0.2.0-rc.1.tgz`
 - `0.1.0-rc.1`：`https://github.com/MELODY-TOYS/DSH-PERSONA/releases/download/v0.1.0-rc.1/dsh-persona-0.1.0-rc.1.tgz`
 - `0.1.0-alpha.3`：`https://github.com/MELODY-TOYS/DSH-PERSONA/releases/download/v0.1.0-alpha.3/dsh-persona-0.1.0-alpha.3.tgz`
 
@@ -49,7 +51,7 @@ npm pack
 
 更新已安装的包后，重启 DSH 加载新代码。DSH 用 pnpm 安装插件，重新安装版本号相同的打包文件不会替换已安装的代码，更新时请使用新版本号的打包文件。首次使用时，修改一项名称，确认自动保存成功后刷新页面，检查配置是否保留；聊天头像和提示词的验证方法见[宿主接入](docs/INTEGRATION.md)。
 
-从 DSH `0.1.6` 升级时，先升级 DSH，再安装本插件的新版本并重启 DSH。插件会把旧 `settings.yaml` 中的名称、头像、分组和提示词迁移到新的配置位置。DSH 日志中关于 `dsh-persona-avatar` 未导入的提示属于预期情况。迁移条件见[从 DSH 0.1.6 升级](docs/INTEGRATION.md#从-dsh-016-升级)。
+从 DSH `0.1.6` 升级时，先升级 DSH，再安装本插件的新版本并重启 DSH。插件会把旧 `settings.yaml` 中的名称、头像、分组和提示词迁移到新的配置位置。DSH 日志中关于 `dsh-persona-avatar` 未导入的提示属于预期情况。迁移条件见[从 DSH 0.1.6 升级](docs/INTEGRATION.md#从-dsh-016-升级)。从 DSH `0.1.7` 升级时，配置已保存在 profile 中，升级 DSH 后安装本插件的新版本并重启即可。
 
 ## 名称、头像与模型分组
 

@@ -4,7 +4,7 @@ import shutil
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-HTML = (ROOT / 'preview/prompts-test.html').read_text()
+HTML = (ROOT / 'preview/prompts-test.html').read_text(encoding='utf-8')
 checks = []
 def passed(name):
     checks.append(name)

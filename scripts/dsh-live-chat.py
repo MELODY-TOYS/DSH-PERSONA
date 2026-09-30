@@ -35,11 +35,18 @@ def summary(rows):
 
 
 def dismiss(page):
-    for name in ['Continue', 'Configure later', '继续', '稍后配置']:
-        button = page.get_by_role('button', name=name, exact=True)
-        if button.count() and button.first.is_enabled():
-            button.first.click()
-            page.wait_for_timeout(600)
+    # Startup notices open after the sidebar renders and block clicks until closed.
+    deadline = time.monotonic() + 5
+    while time.monotonic() < deadline:
+        for name in ['Continue', 'Configure later', '继续', '稍后配置']:
+            button = page.get_by_role('button', name=name, exact=True)
+            if button.count() and button.first.is_enabled():
+                button.first.click()
+                page.wait_for_timeout(600)
+                deadline = time.monotonic() + 2
+                break
+        else:
+            page.wait_for_timeout(200)
 
 
 def run():
@@ -47,7 +54,8 @@ def run():
         browser = p.chromium.launch(executable_path=shutil.which('chromium'), args=['--no-sandbox'])
         errors = []
         try:
-            page = browser.new_page(viewport={'width': 1200, 'height': 900})
+            # DSH follows the browser language; the selectors below use the English UI.
+            page = browser.new_page(viewport={'width': 1200, 'height': 900}, locale='en-US')
             page.on('pageerror', lambda error: errors.append(str(error)))
             page.goto(URL)
             page.wait_for_selector('button[aria-label="New session"], button:has-text("New Session")', timeout=30000)

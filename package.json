@@ -1,6 +1,6 @@
 {
   "name": "dsh-persona",
-  "version": "0.1.0-rc.1",
+  "version": "0.2.0-rc.1",
   "private": true,
   "description": "为用户和模型设置名称、头像与按模型应用的提示词。",
   "type": "module",
@@ -37,7 +37,7 @@
   },
   "engines": {
     "node": ">=22.19.0",
-    "dsh": ">=0.1.7-rc.2 <0.1.8-0"
+    "dsh": ">=0.2.0-rc.2 <0.2.1-0"
   },
   "dsh": {
     "bundle": {
@@ -62,7 +62,7 @@
     "yaml": "2.9.1"
   },
   "peerDependencies": {
-    "@deepseek-ai/dsh": ">=0.1.7-rc.2 <0.1.8-0"
+    "@deepseek-ai/dsh": ">=0.2.0-rc.2 <0.2.1-0"
   },
   "peerDependenciesMeta": {
     "@deepseek-ai/dsh": {

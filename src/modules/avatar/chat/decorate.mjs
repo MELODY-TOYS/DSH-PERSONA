@@ -6,7 +6,9 @@ import styles from './messages.css';
 
 const FLOW = '[data-chat-flow]';
 const STEP = '[data-chat-flow-kind="assistant-step"][data-chat-node-key]';
-const MARKERS = '[data-chat-flow], [data-chat-flow-key], [data-chat-node-key], [data-chat-turn], [data-submission-echo], [data-pending-steering]';
+// DSH renders the running Turn's clock after the transcript, outside every Turn row.
+const RUNNING = '[data-chat-running]';
+const MARKERS = `[data-chat-flow], [data-chat-flow-key], [data-chat-node-key], [data-chat-turn], [data-submission-echo], [data-pending-steering], ${RUNNING}`;
 const USER_KINDS = new Set(['user', 'steering']);
 // A trigger opens a Turn without a user message; it separates runs and keeps its native look.
 const NEUTRAL_KINDS = new Set(['turn-trigger']);
@@ -32,7 +34,8 @@ const visible = row => !VISIBILITY.some(name => row.hasAttribute(name)) && !row.
 
 /**
  * Split the transcript into identity runs: each user row stands alone; consecutive assistant rows of one
- * Turn form one reply. DSH 0.1.7 renders a reply as a Turn status row, a process group and a response part.
+ * Turn form one reply. DSH renders a reply as a Turn status row, a process group and a response part; the
+ * status row stays in place with empty content while the Turn runs and shows the duration once it ends.
  */
 function identityRuns(rows) {
   const runs = [];
@@ -52,7 +55,7 @@ function firstRecordAfter(seq, history) {
 }
 
 /**
- * Decorate DSH 0.1.7's semantic row containers without replacing renderers or moving their children.
+ * Decorate DSH's semantic row containers without replacing renderers or moving their children.
  * Only confirmed settings are used. The disposer restores the native rows and cancels pending work.
  */
 export function decorateChat(root, { settings, chat, models }) {
@@ -164,13 +167,17 @@ export function decorateChat(root, { settings, chat, models }) {
     if (disposed) return;
     readSettings();
     const current = chat.getSnapshot(), history = models.getSnapshot();
-    const runs = identityRuns(topRows(root));
+    const all = topRows(root), status = all.find(row => row.matches(RUNNING));
+    const runs = identityRuns(all.filter(row => row !== status));
     for (const run of runs) {
       run.steps = [...new Set(run.role === 'assistant' ? run.rows.flatMap(row =>
         [row, ...row.querySelectorAll(STEP)].filter(el => el.matches(STEP)).map(nodeKey)) : [])];
     }
     watchNodes(current, runs.flatMap(run => run.steps));
     const desired = new Map(), last = runs.findLast(run => run.role === 'assistant');
+    // The clock belongs to the latest Turn and takes its reply's indent once that reply has a row.
+    const latest = Math.max(...all.map(row => Number(row.dataset.chatTurn)).filter(Number.isFinite));
+    if (status && last && Number(last.turn) === latest) last.rows.push(status);
     if (config) for (const run of runs) {
       let identity = config.user;
       if (run.role === 'assistant') {

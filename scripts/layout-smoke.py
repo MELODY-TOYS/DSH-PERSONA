@@ -5,7 +5,7 @@ import shutil
 from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[1]
-HTML = (ROOT / 'preview/layout-test.html').read_text()
+HTML = (ROOT / 'preview/layout-test.html').read_text(encoding='utf-8')
 checks = []
 def passed(name):
     checks.append(name)
@@ -235,5 +235,5 @@ with sync_playwright() as p:
         passed('Fixture screenshots render with no browser exceptions or remote requests')
     finally:
         browser.close()
-(ROOT/'preview/layout-smoke-results.json').write_text(json.dumps({'environment':'Chromium; TypeScript-bundled views with real controllers; in-memory Host scopes; no DSH installation', 'checks':checks}, ensure_ascii=False, indent=2)+'\n')
+(ROOT/'preview/layout-smoke-results.json').write_text(json.dumps({'environment':'Chromium; TypeScript-bundled views with real controllers; in-memory Host scopes; no DSH installation', 'checks':checks}, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
 print(f'{len(checks)} layout browser checks passed.')

@@ -17,7 +17,7 @@ with sync_playwright() as p:
     errors, requests = [], []
     page.on('pageerror', lambda e: errors.append(str(e)))
     page.on('request', lambda r: requests.append(r.url))
-    page.set_content((ROOT / 'preview/standalone.html').read_text())
+    page.set_content((ROOT / 'preview/standalone.html').read_text(encoding='utf-8'))
     page.click('#open-persona')
     page.wait_for_selector('.dsh-persona-settings')
 
@@ -52,5 +52,5 @@ with sync_playwright() as p:
     check('Settings preview raises no browser exception or external request')
     browser.close()
 
-(ROOT / 'docs/browser-smoke-results.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
+(ROOT / 'docs/browser-smoke-results.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 print(f"{len(report['checks'])} settings checks passed.")
