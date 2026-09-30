@@ -17,7 +17,7 @@ with sync_playwright() as p:
     errors, requests = [], []
     page.on('pageerror', lambda e: errors.append(str(e)))
     page.on('request', lambda r: requests.append(r.url))
-    page.set_content((ROOT / 'preview/standalone.html').read_text())
+    page.set_content((ROOT / 'preview/standalone.html').read_text(encoding='utf-8'))
     page.wait_for_selector('style[data-dsh-persona-brand]', state='attached')
 
     card = page.locator('[data-plugin-package="dsh-persona"] > div > span[aria-hidden]')
@@ -62,5 +62,5 @@ with sync_playwright() as p:
     check('Brand icon adaptation makes no external request or browser exception')
     browser.close()
 
-(ROOT / 'docs/branding-smoke-results.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
+(ROOT / 'docs/branding-smoke-results.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 print(f"{len(report['checks'])} branding checks passed.")
