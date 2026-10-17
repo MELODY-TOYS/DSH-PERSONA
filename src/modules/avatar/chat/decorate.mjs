@@ -5,6 +5,8 @@ import { modelForNode } from '../../../adapters/dsh/model-history.mjs';
 import styles from './messages.css';
 
 const FLOW = '[data-chat-flow]';
+// DSH 0.2.1 wraps the flow slot in a display:contents anchor; rows are its children.
+const SLOT_FLOW = '[data-slot="conversation.chat.flow"]';
 const STEP = '[data-chat-flow-kind="assistant-step"][data-chat-node-key]';
 // DSH renders the running Turn's clock after the transcript, outside every Turn row.
 const RUNNING = '[data-chat-running]';
@@ -21,7 +23,8 @@ const nodeKey = row => row.dataset.chatNodeKey ?? row.dataset.chatFlowKey;
 function topRows(root) {
   return [...root.querySelectorAll(FLOW)]
     .filter(flow => flow.closest('[data-conversation-scroll]') === root && !root.contains(flow.parentElement.closest(FLOW)))
-    .flatMap(flow => [...flow.children]);
+    .flatMap(flow => [...flow.children].flatMap(child =>
+      child.matches(SLOT_FLOW) ? [...child.children] : [child]));
 }
 function side(row) {
   const kind = row.dataset.chatFlowKind;
@@ -194,7 +197,7 @@ export function decorateChat(root, { settings, chat, models }) {
   }
   // Streaming text mutations do not need a rescan; row insertion/removal, identity and row visibility changes do.
   const relevant = node => node.nodeType === 1 && (node.matches(MARKERS) || node.querySelector(MARKERS));
-  const isRow = node => node.nodeType === 1 && node.parentElement?.matches(FLOW);
+  const isRow = node => node.nodeType === 1 && node.parentElement?.matches(`${FLOW}, ${SLOT_FLOW}`);
   const observer = new win.MutationObserver(changes => {
     if (changes.some(change => change.type === 'attributes'
       ? !VISIBILITY.includes(change.attributeName) || isRow(change.target)

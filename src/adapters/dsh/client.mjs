@@ -5,6 +5,7 @@ import { registerPersonaSettings } from './register-settings.mjs';
 import { registerChatAvatars } from './register-chat.mjs';
 import { installBrandIcons } from '../../branding/brand.mjs';
 import { installDetailBackgroundObserver } from '../../branding/detail-background.mjs';
+import { installAccountAvatar } from '../../modules/avatar/sidebar/account.mjs';
 import { mountPromptSettings } from '../../modules/prompts/settings-view.mjs';
 import { registerPromptSettings } from './register-prompts.mjs';
 export const inject = ['slots', 'locale', 'configForms', 'remote', 'remote.session', 'sessions', 'uiConversation'];
@@ -58,6 +59,7 @@ export function apply(ctx) {
   ctx.effect(() => ctx.locale.register(PERSONA_LOCALE_NAMESPACE, { zh, en }), 'dsh-persona: locale dictionaries');
   ctx.effect(() => installBrandIcons(), 'dsh-persona: project icons');
   ctx.effect(() => installDetailBackgroundObserver(), 'dsh-persona: plugin detail backdrop');
+  ctx.effect(() => installAccountAvatar(ctx), 'dsh-persona: account avatar');
   registerPersonaSettings(ctx, PersonaPluginConfig);
   registerPromptSettings(ctx, PromptPluginConfig);
   registerChatAvatars(ctx, ConversationAvatars);

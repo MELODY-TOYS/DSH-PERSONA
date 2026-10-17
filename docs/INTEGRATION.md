@@ -54,7 +54,11 @@ DSH `0.1.6` 把设置保存在 DSH home 的 `settings.yaml`。`0.1.7` 首次启�
 
 装饰器只增加头像与名称所需的 `data-dsp-*` 属性、局部 CSS 和可访问名称，不移动消息子节点。Markdown、附件、思考折叠、工具卡片、消息操作、流式内容和中断状态继续由 DSH 原生 renderer 管理。卸载插件或离开 Session 时会恢复这些行并清理观察器、消息订阅、样式和图片预加载器。
 
-这套实现依赖 `0.2.1-rc.1` 的语义属性：`data-conversation-scroll`、顶层 `data-chat-flow`、`data-chat-turn`、`data-chat-flow-kind` 中的 `user`、`steering`、`turn-trigger` 和 `assistant-step`、`data-chat-node-key`、`data-chat-group-key`、`data-submission-echo` 和 `data-pending-steering`，对话末尾的 `data-chat-running`，以及 `hidden` 与 `data-turn-process-hidden` 两个显示标记。升级 DSH 后运行[真实宿主聊天检查](DEVELOPMENT.md#真实宿主聊天检查)；它在属性或分组方式变化导致头像缺失时失败，并输出每个阶段的行结构。
+这套实现依赖 `0.2.1-rc.1` 的语义属性（行列表外有 `[data-slot="conversation.chat.flow"]` 包装层）：`data-conversation-scroll`、顶层 `data-chat-flow`、`data-chat-turn`、`data-chat-flow-kind` 中的 `user`、`steering`、`turn-trigger` 和 `assistant-step`、`data-chat-node-key`、`data-chat-group-key`、`data-submission-echo` 和 `data-pending-steering`，对话末尾的 `data-chat-running`，以及 `hidden` 与 `data-turn-process-hidden` 两个显示标记。升级 DSH 后运行[真实宿主聊天检查](DEVELOPMENT.md#真实宿主聊天检查)；它在属性或分组方式变化导致头像缺失时失败，并输出每个阶段的行结构。
+
+## 侧栏账号入口
+
+DSH 桌面端在侧栏底部渲染账号入口，头像元素带 `data-avatar-status`。插件在 `documentElement` 上设置 `data-dsp-account-avatar` 和 `--dsp-account-avatar`，用一条局部 CSS 覆盖该 24px 头像；账号菜单、账户信息、登录/登出流程不变。没有用户头像时清除这两个属性，恢复宿主头像。该选择器属于 DSH 的页面结构，升级 DSH 后需要复核。
 
 ## 构建
 
@@ -65,6 +69,8 @@ DSH `0.1.6` 把设置保存在 DSH home 的 `settings.yaml`。`0.1.7` 首次启�
 构建过程使用 TypeScript 转译，没有完成 DSH SDK 类型检查。构建及本地验证方法见[开发指南](DEVELOPMENT.md)。
 
 ## 验证状态
+
+`0.2.1-rc.2` 修复了 DSH `0.2.1` 的流插槽包装层：`scripts/chat-smoke.py` 按该结构复现了头像不显示，修复后 16 项通过；新增的 `scripts/account-smoke.py` 4 项通过。真实桌面重启后的聊天头像和侧栏头像仍待确认。
 
 `0.2.1-rc.1` 在 DSH `0.2.1-rc.1` 的桌面 profile 中验证到组合阶段：本地构建与 Node 测试通过；用 `dsh plugin add` 安装打包文件后，`--dump-config` 组合出 `dsh-persona` 和 `dsh-persona/prompts` 两行，没有本插件入口或兼容性错误。名称、头像、提示词和配置页的真实界面表现尚未在重启后验证；同一 profile 中另一个插件 `@dsh-home/dsh-tool-search@0.1.1` 因固定依赖 `0.2.0-rc.2` 被启动拒绝，与本插件无关。
 

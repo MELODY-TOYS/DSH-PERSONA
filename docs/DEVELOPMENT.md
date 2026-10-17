@@ -40,9 +40,10 @@ npm run build
 python scripts/browser-smoke.py
 python scripts/branding-smoke.py
 python scripts/chat-smoke.py
+python scripts/account-smoke.py
 ```
 
-[聊天头像检查](../scripts/chat-smoke.py) 直接加载源码与样式，不需要先构建。它在 Chromium 中使用按 DSH `0.2.0-rc.2` 页面结构构造的消息行和按消息订阅的数据源，检查每轮一个头像、空行与隐藏行的头像转移、末尾运行状态的缩进、模型信息补齐、折叠展开、消息复用、流式更新和卸载清理；CI 的 `chat-browser` 作业运行同一场景。
+[聊天头像检查](../scripts/chat-smoke.py) 直接加载源码与样式，不需要先构建。它在 Chromium 中使用按 DSH `0.2.1` 页面结构（包括流插槽的 `display: contents` 包装层）构造的消息行和按消息订阅的数据源，检查每轮一个头像、空行与隐藏行的头像转移、末尾运行状态的缩进、模型信息补齐、折叠展开、消息复用、流式更新和卸载清理；CI 的 `chat-browser` 作业运行同一场景。
 
 ### 真实宿主聊天检查
 

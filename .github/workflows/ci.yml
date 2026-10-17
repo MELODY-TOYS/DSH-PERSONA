@@ -28,3 +28,4 @@ jobs:
       - run: python -m pip install playwright==1.57.0
       - run: python -m playwright install --with-deps chromium
       - run: python scripts/chat-smoke.py
+      - run: python scripts/account-smoke.py
