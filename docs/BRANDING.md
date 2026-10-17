@@ -40,4 +40,4 @@ TODO：提供符合 `icon` 字段要求的图标文件，改用宿主原生图�
 
 ## 上游参考
 
-[配置页类型](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/packages/client/ui-plugin-manager/src/client/slot-contract.ts) 定义可传入的属性，[插件管理页实现](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/packages/client/ui-plugin-manager/src/client/PluginManagerPage.tsx) 定义图标容器。
+[配置页类型](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.1/packages/client/ui-plugin-manager/src/client/slot-contract.ts) 定义可传入的属性，[插件管理页实现](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.1/packages/client/ui-plugin-manager/src/client/PluginManagerPage.tsx) 定义图标容器。
