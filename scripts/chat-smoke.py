@@ -11,10 +11,10 @@ HTML = '''<!doctype html><html lang="zh-CN"><meta charset="utf-8">
 <style>
 body { font-family: sans-serif; margin: 24px; }
 [data-conversation-scroll] { max-width: 760px; }
-[data-chat-flow] > div { margin: 24px 0; }
+[data-chat-flow] > div, [data-chat-flow] > [data-slot="conversation.chat.flow"] > div { margin: 24px 0; }
 [data-turn-process-hidden] { display: none; }
 </style>
-<div data-conversation-scroll><div data-chat-flow>
+<div data-conversation-scroll><div data-chat-flow><div data-slot="conversation.chat.flow" style="display: contents">
 <div data-chat-flow-key="u1" data-chat-node-key="u1" data-chat-flow-kind="user" data-chat-turn="1">测试用户消息</div>
 <div data-chat-flow-key="tp1" data-chat-node-key="tp1" data-chat-flow-kind="turn-process" data-chat-turn="1"><button>深度求索中</button></div>
 <div data-chat-group-key='["process","a1","reasoning"]' data-chat-flow-key='["process","a1","reasoning"]' data-chat-turn="1" data-step-process>
@@ -25,7 +25,7 @@ body { font-family: sans-serif; margin: 24px; }
 <div data-chat-flow-key="a1" data-chat-node-key="a1" data-chat-group-part="response" data-chat-flow-kind="assistant-step" data-chat-turn="1"><details>
 <summary>显示更多内容</summary><p>完整回复</p></details></div>
 <div data-chat-flow-key="tt1" data-chat-node-key="tt1" data-chat-flow-kind="turn-tail" data-chat-turn="1"></div>
-</div></div>
+</div></div></div>
 <script type="module">
 import { decorateChat } from '/src/modules/avatar/chat/decorate.mjs';
 function source(initial) {
@@ -36,7 +36,7 @@ function source(initial) {
     set(next) { value = next; for (const fn of [...listeners]) fn(); } };
 }
 // ChatSnapshot.order and the outer source can stay unchanged on a node-only update.
-// See dsh-v0.2.0-rc.2 ui-chat/conversation-nodes/chat-snapshot-builder.ts.
+// See dsh-v0.2.1-rc.1 ui-chat/conversation-nodes/chat-snapshot-builder.ts.
 function nodeStore() {
   const sources = new Map();
   const getSource = key => {

@@ -18,7 +18,7 @@
 
 [src/modules/prompts](../src/modules/prompts) 维护提示词规则、目标选择与系统提示词注入，通过 Persona ID 读取已保存分组。[components.mjs](../src/modules/components.mjs) 声明两个组件的元数据；它们在 DSH 中使用独立的配置入口，各自维护配置版本、保存与清理逻辑。
 
-[src/adapters/dsh](../src/adapters/dsh) 连接插件配置页、宿主设置、模型目录和会话。聊天头像适配通过独立的模型历史 target 获取流式回复的精确路由，再由 [decorate.mjs](../src/modules/avatar/chat/decorate.mjs) 装饰宿主已经渲染的消息行，不替换原生消息 renderer。
+[src/adapters/dsh](../src/adapters/dsh) 连接插件配置页、宿主设置、模型目录和会话。聊天头像适配通过独立的模型历史 target 获取流式回复的精确路由，再由 [decorate.mjs](../src/modules/avatar/chat/decorate.mjs) 装饰宿主已经渲染的消息行，不替换原生消息 renderer。侧栏账号入口的头像由 [account.mjs](../src/modules/avatar/sidebar/account.mjs) 通过根元素上的属性与 CSS 变量覆盖，不进入宿主账号菜单。
 
 [src/branding/brand.mjs](../src/branding/brand.mjs) 只负责项目图片、插件图标和独立预览 favicon。
 

@@ -1,0 +1,10 @@
+/* The sidebar account launcher keeps its own menu; only the launcher picture follows Persona. */
+html[data-dsp-account-avatar] [data-avatar-status] { position: relative; overflow: hidden; }
+html[data-dsp-account-avatar] [data-avatar-status] > * { opacity: 0; }
+html[data-dsp-account-avatar] [data-avatar-status]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--dsp-account-avatar) center / cover no-repeat;
+}
