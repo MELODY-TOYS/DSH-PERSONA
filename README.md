@@ -8,7 +8,7 @@
 
 一套 Persona 是一组共用名称与头像的模型，可以包含不同渠道的模型；每个模型最多属于一套 Persona。用户的名称与头像单独设置。初始 Persona 集合与提示词规则均为空，由使用者自行配置。
 
-当前为候选版本（rc），适配 DSH `0.2.0-rc.2`，不支持 `0.1.x` 和 `0.2.0-rc.1`。已完成的联调和待验证场景见[宿主接入](docs/INTEGRATION.md#验证状态)，各版本变化见[更新日志](CHANGELOG.md)。
+当前为候选版本（rc），适配 DSH `0.2.1-rc.1`；DSH `0.2.0-rc.2` 及更早的 `0.2.x` 版本使用插件 `0.2.0-rc.1`。已完成的联调和待验证场景见[宿主接入](docs/INTEGRATION.md#验证状态)，各版本变化见[更新日志](CHANGELOG.md)。
 
 https://github.com/user-attachments/assets/49004ddd-834e-4cf0-ad6d-6a07e77ddfc9
 
@@ -18,14 +18,16 @@ https://github.com/user-attachments/assets/49004ddd-834e-4cf0-ad6d-6a07e77ddfc9
 
 | 插件版本 | 支持的 DSH |
 | --- | --- |
+| `0.2.1-rc.1` | `0.2.1-rc.1` 至 `0.2.1` 正式版 |
 | `0.2.0-rc.1` | `0.2.0-rc.2` 至 `0.2.0` 正式版 |
 | `0.1.0-rc.1` | `0.1.7-rc.2` |
 | `0.1.0-alpha.3` | `0.1.6-alpha.2` |
 
-DSH `0.2.0-rc.1` 以及 `0.2.1` 和更高版本会按版本声明拒绝安装当前插件。版本声明见[宿主接入](docs/INTEGRATION.md#版本声明)，各版本变化见[更新日志](CHANGELOG.md)。
+DSH `0.2.0-rc.2` 及更早版本不在本版本范围内，`0.2.2` 和更高版本会按版本声明拒绝安装当前插件。版本声明见[宿主接入](docs/INTEGRATION.md#版本声明)，各版本变化见[更新日志](CHANGELOG.md)。
 
 在 DSH 侧边栏打开「插件」，点击「添加插件」，粘贴对应版本的安装包链接并安装，安装完成后点击「立即启用」：
 
+- `0.2.1-rc.1`：`https://github.com/MELODY-TOYS/DSH-PERSONA/releases/download/v0.2.1-rc.1/dsh-persona-0.2.1-rc.1.tgz`
 - `0.2.0-rc.1`：`https://github.com/MELODY-TOYS/DSH-PERSONA/releases/download/v0.2.0-rc.1/dsh-persona-0.2.0-rc.1.tgz`
 - `0.1.0-rc.1`：`https://github.com/MELODY-TOYS/DSH-PERSONA/releases/download/v0.1.0-rc.1/dsh-persona-0.1.0-rc.1.tgz`
 - `0.1.0-alpha.3`：`https://github.com/MELODY-TOYS/DSH-PERSONA/releases/download/v0.1.0-alpha.3/dsh-persona-0.1.0-alpha.3.tgz`

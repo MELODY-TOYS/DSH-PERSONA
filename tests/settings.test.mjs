@@ -153,8 +153,8 @@ test('manifest package key, bundle row and native artifact agree', () => {
   const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
   const patch = readFileSync(new URL('../cordis.patch.yml', import.meta.url), 'utf8');
   assert.equal(pkg.name, 'dsh-persona'); assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml');
-  // DSH enforces @deepseek-ai/dsh peers; profiles never install them.
-  assert.equal(pkg.engines.dsh, '>=0.2.0-rc.2 <0.2.1-0'); assert.equal(pkg.peerDependencies['@deepseek-ai/dsh'], pkg.engines.dsh);
+  // DSH 0.2.1 checks engines.dsh first; profiles never install the optional peer.
+  assert.equal(pkg.engines.dsh, '>=0.2.1-rc.1 <0.2.2-0'); assert.equal(pkg.peerDependencies['@deepseek-ai/dsh'], pkg.engines.dsh);
   assert.equal(pkg.peerDependenciesMeta['@deepseek-ai/dsh'].optional, true); assert.match(patch, /name: dsh-persona/);
   assert.equal(pkg.exports['./client'], './lib/client.js'); assert.equal(pkg.dsh.client.platform, 'web');
   assert.ok(!readFileSync(new URL('../src/adapters/dsh/register-settings.mjs', import.meta.url), 'utf8').includes('plugins.bundle.config'));
